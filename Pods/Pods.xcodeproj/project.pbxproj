@@ -1,0 +1,1121 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0DBD1E8E462F2EA28E0994DA5F1EEC74 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */; };
+		22679300B9661E96C5A1DFE17629CB33 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77AA8FC57764E9577CA25AFE700170D3 /* SystemConfiguration.framework */; };
+		3D169A53D7B056415ECC7E3205F0F301 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */; };
+		412FEA37AAA3E4BDD41EE5EADE7F1B91 /* Pods-Smart Home-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A010E0258C5265748B2D8FB2267F6B2 /* Pods-Smart Home-dummy.m */; };
+		41C5CFDC24A932134E625416CA9E7ECE /* Pods-Smart HomeUITests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 681907647D58D5461D3E7CE9EDD57240 /* Pods-Smart HomeUITests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		479318B080332DFA383623351AE617A0 /* Pods-Smart HomeTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5874A98D096E58F05B5DA87F3E2A80 /* Pods-Smart HomeTests-dummy.m */; };
+		59FF16EA55C006250047CAE3E8AA784B /* ReachabilitySwift-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A290AE73475E04BB30E2479A90407C4A /* ReachabilitySwift-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6886D95AC6AFABD57EB62DAC0AC992D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */; };
+		7F9F084BFF23E0E789F340DC7F2FF0E2 /* SwiftyJSON-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E26B0BC16EFEC0D09F12309FCAF264 /* SwiftyJSON-dummy.m */; };
+		9189B5D3DC2CE68AD8490164A87BEE96 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */; };
+		99851775A3548362FA2A62821F61F380 /* Pods-Smart HomeTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D3A4557D6B42BF019678EBB5602BF09 /* Pods-Smart HomeTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6FF2C529E5ED0A2EA95CEEB5DF685C0 /* SwiftyJSON-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 88274F1E32C3EDB2E616D5E8DE65CC91 /* SwiftyJSON-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B044A3DC1B55752AE7ADCF89C32B2C6F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */; };
+		B2D291B6D45D76BB82EDC9AE0A682BEE /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E92393D9BB110835A46126415DB7EB /* SwiftyJSON.swift */; };
+		CAA3DBC666ACE52875FFCD2CF28BB259 /* ReachabilitySwift-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D345C96FE99FD0D0393F56AABDBF033C /* ReachabilitySwift-dummy.m */; };
+		CF8746801EF42D6E739EDFA52FD14953 /* Pods-Smart HomeUITests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A599C5C75660BFF615B14EFEB84A1AA8 /* Pods-Smart HomeUITests-dummy.m */; };
+		DFDD199362C525FE7437FB8453847303 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CAE091C54CA8B5CECD08508643D0DF6 /* Reachability.swift */; };
+		ED4667D0F7C893A922A5F9E52FFF2008 /* Pods-Smart Home-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C51A359B530519A708ADD62E68B8BC3 /* Pods-Smart Home-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		80FFFD08BB267AA5494705A1A0169B6D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B49049D8C9FA31D17FE438B028FA1454;
+			remoteInfo = ReachabilitySwift;
+		};
+		8316900E6E21D2A8AFDCB926FD2B2FF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 485C183C2003A5319A910B22E5CC947C;
+			remoteInfo = "Pods-Smart Home";
+		};
+		AAADEC74935395607DE296F1746E5121 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 485C183C2003A5319A910B22E5CC947C;
+			remoteInfo = "Pods-Smart Home";
+		};
+		D5DC59F82690558426071F21C90AAC2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BE39DB43D6D1777E99A02B2ECC62FD4;
+			remoteInfo = SwiftyJSON;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		068506BF1457A8A7B0CCFBB77C853D1F /* Pods-Smart HomeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smart HomeTests.release.xcconfig"; sourceTree = "<group>"; };
+		0C51A359B530519A708ADD62E68B8BC3 /* Pods-Smart Home-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Smart Home-umbrella.h"; sourceTree = "<group>"; };
+		0F6939581425E8C2A29DEA9384BD5746 /* ReachabilitySwift.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ReachabilitySwift.modulemap; sourceTree = "<group>"; };
+		19EEFDCEF2C190BE7D457FF612F8644F /* Pods-Smart HomeTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smart HomeTests-frameworks.sh"; sourceTree = "<group>"; };
+		2EE9FF446DFB12205E271CE60EFDC850 /* Pods-Smart HomeUITests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smart HomeUITests-acknowledgements.plist"; sourceTree = "<group>"; };
+		31A45BDFB8C95AA27A9A3AE8C27256A3 /* Pods-Smart Home.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smart Home.release.xcconfig"; sourceTree = "<group>"; };
+		3CAE091C54CA8B5CECD08508643D0DF6 /* Reachability.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = Reachability/Reachability.swift; sourceTree = "<group>"; };
+		3D201F60E6469DC00AC94D36D456A1ED /* Pods-Smart HomeUITests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Smart HomeUITests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		45386352C26F938A814965B617FD067C /* Pods-Smart Home-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smart Home-resources.sh"; sourceTree = "<group>"; };
+		4944A28D0AADB1DCAE116839024AE8E7 /* Pods-Smart HomeUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smart HomeUITests.release.xcconfig"; sourceTree = "<group>"; };
+		54678CC8C9E7988C2F74879F8B5E8499 /* Reachability.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Reachability.framework; path = ReachabilitySwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		56C15D1D0CCBF68C54912E8EF5B0CAF6 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		59E92393D9BB110835A46126415DB7EB /* SwiftyJSON.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = Source/SwiftyJSON.swift; sourceTree = "<group>"; };
+		5C9B0925DFC9F873185AC7ADC4E1D4F1 /* Pods-Smart Home.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smart Home.debug.xcconfig"; sourceTree = "<group>"; };
+		665C04788C81646D8178E7DD915FFB12 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		681907647D58D5461D3E7CE9EDD57240 /* Pods-Smart HomeUITests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Smart HomeUITests-umbrella.h"; sourceTree = "<group>"; };
+		6A0C297F0A6A8D48BC34997D19256766 /* Pods-Smart HomeUITests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smart HomeUITests-frameworks.sh"; sourceTree = "<group>"; };
+		709FCA6BE1F732F1C1F5D2A9059E9FA2 /* Pods-Smart HomeTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Smart HomeTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		7224EA3717E266F72EF9F6FB25866DDB /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		77AA8FC57764E9577CA25AFE700170D3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		7A9FE864B519F11E9359A844EF99C311 /* Pods-Smart HomeTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smart HomeTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		7D15ECB9D7E6305C5288C2351EBC6DA6 /* Pods_Smart_Home.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Smart_Home.framework; path = "Pods-Smart Home.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D1AC09B8918E9658C4437A7DA7B733A /* Pods_Smart_HomeTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Smart_HomeTests.framework; path = "Pods-Smart HomeTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		88274F1E32C3EDB2E616D5E8DE65CC91 /* SwiftyJSON-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SwiftyJSON-umbrella.h"; sourceTree = "<group>"; };
+		88E26B0BC16EFEC0D09F12309FCAF264 /* SwiftyJSON-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SwiftyJSON-dummy.m"; sourceTree = "<group>"; };
+		8A010E0258C5265748B2D8FB2267F6B2 /* Pods-Smart Home-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Smart Home-dummy.m"; sourceTree = "<group>"; };
+		90D0BFEA7816D26456CD06FCEC767616 /* Pods-Smart HomeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smart HomeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		96390BFAE669334D23F0F6B151097419 /* Pods-Smart HomeUITests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smart HomeUITests-resources.sh"; sourceTree = "<group>"; };
+		966B49E80346A31370C4A95831861561 /* SwiftyJSON.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SwiftyJSON.modulemap; sourceTree = "<group>"; };
+		9AACB02D2D5DA64B0E673ECC2DA6D74F /* Pods-Smart Home.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Smart Home.modulemap"; sourceTree = "<group>"; };
+		9CA7C1D8A65BCEE3932CBF9D603310A9 /* SwiftyJSON-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SwiftyJSON-prefix.pch"; sourceTree = "<group>"; };
+		9D3A4557D6B42BF019678EBB5602BF09 /* Pods-Smart HomeTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Smart HomeTests-umbrella.h"; sourceTree = "<group>"; };
+		A290AE73475E04BB30E2479A90407C4A /* ReachabilitySwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ReachabilitySwift-umbrella.h"; sourceTree = "<group>"; };
+		A569A7A9A0341CE29A26426039D2014E /* Pods-Smart HomeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smart HomeUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		A599C5C75660BFF615B14EFEB84A1AA8 /* Pods-Smart HomeUITests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Smart HomeUITests-dummy.m"; sourceTree = "<group>"; };
+		AD5874A98D096E58F05B5DA87F3E2A80 /* Pods-Smart HomeTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Smart HomeTests-dummy.m"; sourceTree = "<group>"; };
+		B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		B21F33F9431E33C8C9B08C5514FEEE80 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7827EF4B2B0C200F1287D3B55C4C73B /* Pods-Smart Home-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Smart Home-acknowledgements.markdown"; sourceTree = "<group>"; };
+		BA535C1B00BA449FC446572A1CB38DBE /* Pods-Smart HomeUITests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Smart HomeUITests.modulemap"; sourceTree = "<group>"; };
+		BF73F1602BED8182476D86B99E276C85 /* Pods-Smart Home-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smart Home-frameworks.sh"; sourceTree = "<group>"; };
+		C380C73EB3A4B2B2ADB0C80C9FE1DB65 /* Pods_Smart_HomeUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Smart_HomeUITests.framework; path = "Pods-Smart HomeUITests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6C4B0659E48F16CC094157B3BE107F2 /* ReachabilitySwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ReachabilitySwift-prefix.pch"; sourceTree = "<group>"; };
+		CC69DD86F9D4BB3F7743136A5351904B /* Pods-Smart Home-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smart Home-acknowledgements.plist"; sourceTree = "<group>"; };
+		D345C96FE99FD0D0393F56AABDBF033C /* ReachabilitySwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ReachabilitySwift-dummy.m"; sourceTree = "<group>"; };
+		D747D3E86A6C770667DA7518C6625B96 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E9106892FC433D2B6F22681D0878CA32 /* SwiftyJSON.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftyJSON.xcconfig; sourceTree = "<group>"; };
+		EFA49935EC894EDD4A234F7EE7523458 /* Pods-Smart HomeTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Smart HomeTests.modulemap"; sourceTree = "<group>"; };
+		F2839E526DCB3B639BE7F0836E2C1D90 /* Pods-Smart HomeTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smart HomeTests-resources.sh"; sourceTree = "<group>"; };
+		F396894CBD4DC40F9AFF3869391667F3 /* SwiftyJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SwiftyJSON.framework; path = SwiftyJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4E9D7E0C3C1D4D3CE4FD8864CBD5EDA /* ReachabilitySwift.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ReachabilitySwift.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2484AD9B6434873E0C7C6850E572495C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6886D95AC6AFABD57EB62DAC0AC992D2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6316850CA22C009742804A2EB7FC43D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D169A53D7B056415ECC7E3205F0F301 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		759FBA8C896C860CF88AAFCB86283D96 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0DBD1E8E462F2EA28E0994DA5F1EEC74 /* Foundation.framework in Frameworks */,
+				22679300B9661E96C5A1DFE17629CB33 /* SystemConfiguration.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6B9F2959A7D6DD28062948050A73EFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B044A3DC1B55752AE7ADCF89C32B2C6F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E52D08A089B8063F288BACDCA209C375 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9189B5D3DC2CE68AD8490164A87BEE96 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00CCF619DAC37E87A125E1C9A7E53961 /* Pods-Smart HomeTests */ = {
+			isa = PBXGroup;
+			children = (
+				56C15D1D0CCBF68C54912E8EF5B0CAF6 /* Info.plist */,
+				EFA49935EC894EDD4A234F7EE7523458 /* Pods-Smart HomeTests.modulemap */,
+				709FCA6BE1F732F1C1F5D2A9059E9FA2 /* Pods-Smart HomeTests-acknowledgements.markdown */,
+				7A9FE864B519F11E9359A844EF99C311 /* Pods-Smart HomeTests-acknowledgements.plist */,
+				AD5874A98D096E58F05B5DA87F3E2A80 /* Pods-Smart HomeTests-dummy.m */,
+				19EEFDCEF2C190BE7D457FF612F8644F /* Pods-Smart HomeTests-frameworks.sh */,
+				F2839E526DCB3B639BE7F0836E2C1D90 /* Pods-Smart HomeTests-resources.sh */,
+				9D3A4557D6B42BF019678EBB5602BF09 /* Pods-Smart HomeTests-umbrella.h */,
+				90D0BFEA7816D26456CD06FCEC767616 /* Pods-Smart HomeTests.debug.xcconfig */,
+				068506BF1457A8A7B0CCFBB77C853D1F /* Pods-Smart HomeTests.release.xcconfig */,
+			);
+			name = "Pods-Smart HomeTests";
+			path = "Target Support Files/Pods-Smart HomeTests";
+			sourceTree = "<group>";
+		};
+		02038BCF215BF3897796F0718135DC4E /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				C050B364E0409B995CF4558161C9ED8A /* Pods-Smart Home */,
+				00CCF619DAC37E87A125E1C9A7E53961 /* Pods-Smart HomeTests */,
+				A02F14923B16998C35FBFD9B17918B04 /* Pods-Smart HomeUITests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		1F1EAC4E95B22E38E279F9A0210578E1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EE870F5734D2AC92502F181920D84380 /* ReachabilitySwift */,
+				401DF1155CFCC57F5E39C868F71AB829 /* SwiftyJSON */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		27B754B14E7F5BDD025A603861F1DD97 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				B1C3A1F100D6DE00B711E31320AFB0EB /* Foundation.framework */,
+				77AA8FC57764E9577CA25AFE700170D3 /* SystemConfiguration.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		401DF1155CFCC57F5E39C868F71AB829 /* SwiftyJSON */ = {
+			isa = PBXGroup;
+			children = (
+				59E92393D9BB110835A46126415DB7EB /* SwiftyJSON.swift */,
+				B6A75907A376B27A78D93CD471E365E5 /* Support Files */,
+			);
+			name = SwiftyJSON;
+			path = SwiftyJSON;
+			sourceTree = "<group>";
+		};
+		433CD3331B6C3787F473C941B61FC68F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				27B754B14E7F5BDD025A603861F1DD97 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		78AD42258BCED6797F95667E9C807D54 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				7224EA3717E266F72EF9F6FB25866DDB /* Info.plist */,
+				0F6939581425E8C2A29DEA9384BD5746 /* ReachabilitySwift.modulemap */,
+				F4E9D7E0C3C1D4D3CE4FD8864CBD5EDA /* ReachabilitySwift.xcconfig */,
+				D345C96FE99FD0D0393F56AABDBF033C /* ReachabilitySwift-dummy.m */,
+				C6C4B0659E48F16CC094157B3BE107F2 /* ReachabilitySwift-prefix.pch */,
+				A290AE73475E04BB30E2479A90407C4A /* ReachabilitySwift-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/ReachabilitySwift";
+			sourceTree = "<group>";
+		};
+		7C6A64E724DDBC6BE26CCC57CF680BAD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7D15ECB9D7E6305C5288C2351EBC6DA6 /* Pods_Smart_Home.framework */,
+				7D1AC09B8918E9658C4437A7DA7B733A /* Pods_Smart_HomeTests.framework */,
+				C380C73EB3A4B2B2ADB0C80C9FE1DB65 /* Pods_Smart_HomeUITests.framework */,
+				54678CC8C9E7988C2F74879F8B5E8499 /* Reachability.framework */,
+				F396894CBD4DC40F9AFF3869391667F3 /* SwiftyJSON.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7DB346D0F39D3F0E887471402A8071AB = {
+			isa = PBXGroup;
+			children = (
+				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
+				433CD3331B6C3787F473C941B61FC68F /* Frameworks */,
+				1F1EAC4E95B22E38E279F9A0210578E1 /* Pods */,
+				7C6A64E724DDBC6BE26CCC57CF680BAD /* Products */,
+				02038BCF215BF3897796F0718135DC4E /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		A02F14923B16998C35FBFD9B17918B04 /* Pods-Smart HomeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D747D3E86A6C770667DA7518C6625B96 /* Info.plist */,
+				BA535C1B00BA449FC446572A1CB38DBE /* Pods-Smart HomeUITests.modulemap */,
+				3D201F60E6469DC00AC94D36D456A1ED /* Pods-Smart HomeUITests-acknowledgements.markdown */,
+				2EE9FF446DFB12205E271CE60EFDC850 /* Pods-Smart HomeUITests-acknowledgements.plist */,
+				A599C5C75660BFF615B14EFEB84A1AA8 /* Pods-Smart HomeUITests-dummy.m */,
+				6A0C297F0A6A8D48BC34997D19256766 /* Pods-Smart HomeUITests-frameworks.sh */,
+				96390BFAE669334D23F0F6B151097419 /* Pods-Smart HomeUITests-resources.sh */,
+				681907647D58D5461D3E7CE9EDD57240 /* Pods-Smart HomeUITests-umbrella.h */,
+				A569A7A9A0341CE29A26426039D2014E /* Pods-Smart HomeUITests.debug.xcconfig */,
+				4944A28D0AADB1DCAE116839024AE8E7 /* Pods-Smart HomeUITests.release.xcconfig */,
+			);
+			name = "Pods-Smart HomeUITests";
+			path = "Target Support Files/Pods-Smart HomeUITests";
+			sourceTree = "<group>";
+		};
+		B6A75907A376B27A78D93CD471E365E5 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				665C04788C81646D8178E7DD915FFB12 /* Info.plist */,
+				966B49E80346A31370C4A95831861561 /* SwiftyJSON.modulemap */,
+				E9106892FC433D2B6F22681D0878CA32 /* SwiftyJSON.xcconfig */,
+				88E26B0BC16EFEC0D09F12309FCAF264 /* SwiftyJSON-dummy.m */,
+				9CA7C1D8A65BCEE3932CBF9D603310A9 /* SwiftyJSON-prefix.pch */,
+				88274F1E32C3EDB2E616D5E8DE65CC91 /* SwiftyJSON-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/SwiftyJSON";
+			sourceTree = "<group>";
+		};
+		C050B364E0409B995CF4558161C9ED8A /* Pods-Smart Home */ = {
+			isa = PBXGroup;
+			children = (
+				B21F33F9431E33C8C9B08C5514FEEE80 /* Info.plist */,
+				9AACB02D2D5DA64B0E673ECC2DA6D74F /* Pods-Smart Home.modulemap */,
+				B7827EF4B2B0C200F1287D3B55C4C73B /* Pods-Smart Home-acknowledgements.markdown */,
+				CC69DD86F9D4BB3F7743136A5351904B /* Pods-Smart Home-acknowledgements.plist */,
+				8A010E0258C5265748B2D8FB2267F6B2 /* Pods-Smart Home-dummy.m */,
+				BF73F1602BED8182476D86B99E276C85 /* Pods-Smart Home-frameworks.sh */,
+				45386352C26F938A814965B617FD067C /* Pods-Smart Home-resources.sh */,
+				0C51A359B530519A708ADD62E68B8BC3 /* Pods-Smart Home-umbrella.h */,
+				5C9B0925DFC9F873185AC7ADC4E1D4F1 /* Pods-Smart Home.debug.xcconfig */,
+				31A45BDFB8C95AA27A9A3AE8C27256A3 /* Pods-Smart Home.release.xcconfig */,
+			);
+			name = "Pods-Smart Home";
+			path = "Target Support Files/Pods-Smart Home";
+			sourceTree = "<group>";
+		};
+		EE870F5734D2AC92502F181920D84380 /* ReachabilitySwift */ = {
+			isa = PBXGroup;
+			children = (
+				3CAE091C54CA8B5CECD08508643D0DF6 /* Reachability.swift */,
+				78AD42258BCED6797F95667E9C807D54 /* Support Files */,
+			);
+			name = ReachabilitySwift;
+			path = ReachabilitySwift;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2365E94D938A511357D58533ECF8A624 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41C5CFDC24A932134E625416CA9E7ECE /* Pods-Smart HomeUITests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2770AF640FE26D2AE01B25CAC894DAE6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6FF2C529E5ED0A2EA95CEEB5DF685C0 /* SwiftyJSON-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58D0479EDBC9EAF15BB8A48CD1700A69 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED4667D0F7C893A922A5F9E52FFF2008 /* Pods-Smart Home-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5EE720D8604A1F540AA64EDF1F2C9C27 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				59FF16EA55C006250047CAE3E8AA784B /* ReachabilitySwift-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9865B63E0613890694D72450CCB2C252 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99851775A3548362FA2A62821F61F380 /* Pods-Smart HomeTests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1BE39DB43D6D1777E99A02B2ECC62FD4 /* SwiftyJSON */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 661BAE9794B9B2917F41E4591D3ADB34 /* Build configuration list for PBXNativeTarget "SwiftyJSON" */;
+			buildPhases = (
+				5F1AD502602C789E875A32BB9793458D /* Sources */,
+				2484AD9B6434873E0C7C6850E572495C /* Frameworks */,
+				2770AF640FE26D2AE01B25CAC894DAE6 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftyJSON;
+			productName = SwiftyJSON;
+			productReference = F396894CBD4DC40F9AFF3869391667F3 /* SwiftyJSON.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		22DCCE5078F3759F0F5E05744ADBA778 /* Pods-Smart HomeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4046A5FB0C99A02EC97AB085D107B95 /* Build configuration list for PBXNativeTarget "Pods-Smart HomeUITests" */;
+			buildPhases = (
+				4EB993C4EB2D9CE854871325A67A7F31 /* Sources */,
+				6316850CA22C009742804A2EB7FC43D1 /* Frameworks */,
+				2365E94D938A511357D58533ECF8A624 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				792C08D6AEBDCA2D9918C2316A0F700D /* PBXTargetDependency */,
+			);
+			name = "Pods-Smart HomeUITests";
+			productName = "Pods-Smart HomeUITests";
+			productReference = C380C73EB3A4B2B2ADB0C80C9FE1DB65 /* Pods_Smart_HomeUITests.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		485C183C2003A5319A910B22E5CC947C /* Pods-Smart Home */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2385CE7B7E935C1F0B0679CAB70CF25 /* Build configuration list for PBXNativeTarget "Pods-Smart Home" */;
+			buildPhases = (
+				68470A5D8EB8454EEE6F0FA03BA05B0E /* Sources */,
+				D6B9F2959A7D6DD28062948050A73EFB /* Frameworks */,
+				58D0479EDBC9EAF15BB8A48CD1700A69 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0F063018D37F531EB992B21E01C260D4 /* PBXTargetDependency */,
+				D2E80B27F56F0E0A886160CA673D0541 /* PBXTargetDependency */,
+			);
+			name = "Pods-Smart Home";
+			productName = "Pods-Smart Home";
+			productReference = 7D15ECB9D7E6305C5288C2351EBC6DA6 /* Pods_Smart_Home.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		542A5EAF70C078B8D80523779969B139 /* Pods-Smart HomeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7C02005810BD0D96EA2AE42D9E865BF7 /* Build configuration list for PBXNativeTarget "Pods-Smart HomeTests" */;
+			buildPhases = (
+				E5CBCAD99E2721B3EC33F9A57056732B /* Sources */,
+				E52D08A089B8063F288BACDCA209C375 /* Frameworks */,
+				9865B63E0613890694D72450CCB2C252 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E6B9A4583852EDE3ACFD54AD58C42F24 /* PBXTargetDependency */,
+			);
+			name = "Pods-Smart HomeTests";
+			productName = "Pods-Smart HomeTests";
+			productReference = 7D1AC09B8918E9658C4437A7DA7B733A /* Pods_Smart_HomeTests.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		B49049D8C9FA31D17FE438B028FA1454 /* ReachabilitySwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7E0139FF38D920457516994AE4800D73 /* Build configuration list for PBXNativeTarget "ReachabilitySwift" */;
+			buildPhases = (
+				96C27F22F879BCFCD561C122359575FA /* Sources */,
+				759FBA8C896C860CF88AAFCB86283D96 /* Frameworks */,
+				5EE720D8604A1F540AA64EDF1F2C9C27 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReachabilitySwift;
+			productName = ReachabilitySwift;
+			productReference = 54678CC8C9E7988C2F74879F8B5E8499 /* Reachability.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D41D8CD98F00B204E9800998ECF8427E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+			};
+			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
+			productRefGroup = 7C6A64E724DDBC6BE26CCC57CF680BAD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				485C183C2003A5319A910B22E5CC947C /* Pods-Smart Home */,
+				542A5EAF70C078B8D80523779969B139 /* Pods-Smart HomeTests */,
+				22DCCE5078F3759F0F5E05744ADBA778 /* Pods-Smart HomeUITests */,
+				B49049D8C9FA31D17FE438B028FA1454 /* ReachabilitySwift */,
+				1BE39DB43D6D1777E99A02B2ECC62FD4 /* SwiftyJSON */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4EB993C4EB2D9CE854871325A67A7F31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF8746801EF42D6E739EDFA52FD14953 /* Pods-Smart HomeUITests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5F1AD502602C789E875A32BB9793458D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F9F084BFF23E0E789F340DC7F2FF0E2 /* SwiftyJSON-dummy.m in Sources */,
+				B2D291B6D45D76BB82EDC9AE0A682BEE /* SwiftyJSON.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68470A5D8EB8454EEE6F0FA03BA05B0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				412FEA37AAA3E4BDD41EE5EADE7F1B91 /* Pods-Smart Home-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96C27F22F879BCFCD561C122359575FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFDD199362C525FE7437FB8453847303 /* Reachability.swift in Sources */,
+				CAA3DBC666ACE52875FFCD2CF28BB259 /* ReachabilitySwift-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5CBCAD99E2721B3EC33F9A57056732B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				479318B080332DFA383623351AE617A0 /* Pods-Smart HomeTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0F063018D37F531EB992B21E01C260D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ReachabilitySwift;
+			target = B49049D8C9FA31D17FE438B028FA1454 /* ReachabilitySwift */;
+			targetProxy = 80FFFD08BB267AA5494705A1A0169B6D /* PBXContainerItemProxy */;
+		};
+		792C08D6AEBDCA2D9918C2316A0F700D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-Smart Home";
+			target = 485C183C2003A5319A910B22E5CC947C /* Pods-Smart Home */;
+			targetProxy = AAADEC74935395607DE296F1746E5121 /* PBXContainerItemProxy */;
+		};
+		D2E80B27F56F0E0A886160CA673D0541 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftyJSON;
+			target = 1BE39DB43D6D1777E99A02B2ECC62FD4 /* SwiftyJSON */;
+			targetProxy = D5DC59F82690558426071F21C90AAC2C /* PBXContainerItemProxy */;
+		};
+		E6B9A4583852EDE3ACFD54AD58C42F24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-Smart Home";
+			target = 485C183C2003A5319A910B22E5CC947C /* Pods-Smart Home */;
+			targetProxy = 8316900E6E21D2A8AFDCB926FD2B2FF6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		05913A745A4784BE1B2E11478D5BA7BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9106892FC433D2B6F22681D0878CA32 /* SwiftyJSON.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SwiftyJSON/SwiftyJSON-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SwiftyJSON/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SwiftyJSON/SwiftyJSON.modulemap";
+				PRODUCT_MODULE_NAME = SwiftyJSON;
+				PRODUCT_NAME = SwiftyJSON;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		08638A96A528B1EC32DE62F8A728389D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		150984E972C057EEC2657870FFA7A349 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F4E9D7E0C3C1D4D3CE4FD8864CBD5EDA /* ReachabilitySwift.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/ReachabilitySwift/ReachabilitySwift-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/ReachabilitySwift/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/ReachabilitySwift/ReachabilitySwift.modulemap";
+				PRODUCT_MODULE_NAME = Reachability;
+				PRODUCT_NAME = Reachability;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		2936F9E3D0DDB1D9C4E0283E9D99FA47 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A569A7A9A0341CE29A26426039D2014E /* Pods-Smart HomeUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Smart HomeUITests/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Smart HomeUITests/Pods-Smart HomeUITests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		4503033AC731518470343E4CE3668DDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4944A28D0AADB1DCAE116839024AE8E7 /* Pods-Smart HomeUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Smart HomeUITests/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Smart HomeUITests/Pods-Smart HomeUITests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		48B1F095A18F9DB621D71B94B153C92E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F4E9D7E0C3C1D4D3CE4FD8864CBD5EDA /* ReachabilitySwift.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/ReachabilitySwift/ReachabilitySwift-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/ReachabilitySwift/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/ReachabilitySwift/ReachabilitySwift.modulemap";
+				PRODUCT_MODULE_NAME = Reachability;
+				PRODUCT_NAME = Reachability;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6592372EE9FE0EEA7FEB2EBDF69F1171 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5C9B0925DFC9F873185AC7ADC4E1D4F1 /* Pods-Smart Home.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Smart Home/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Smart Home/Pods-Smart Home.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		9DAE5233986C01ADB6E67169C53A3FD2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		B5CA0256429A05ACA996E36EC12144F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31A45BDFB8C95AA27A9A3AE8C27256A3 /* Pods-Smart Home.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Smart Home/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Smart Home/Pods-Smart Home.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		D2A979AFA00D3FF6B281CCFA47E02E49 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9106892FC433D2B6F22681D0878CA32 /* SwiftyJSON.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SwiftyJSON/SwiftyJSON-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SwiftyJSON/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SwiftyJSON/SwiftyJSON.modulemap";
+				PRODUCT_MODULE_NAME = SwiftyJSON;
+				PRODUCT_NAME = SwiftyJSON;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		E0D6A0DF3B10FBCB69590C8CE60461D6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 90D0BFEA7816D26456CD06FCEC767616 /* Pods-Smart HomeTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Smart HomeTests/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Smart HomeTests/Pods-Smart HomeTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		F51CF3F2051251F7609D272DDE99022F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 068506BF1457A8A7B0CCFBB77C853D1F /* Pods-Smart HomeTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Smart HomeTests/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Smart HomeTests/Pods-Smart HomeTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9DAE5233986C01ADB6E67169C53A3FD2 /* Debug */,
+				08638A96A528B1EC32DE62F8A728389D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		661BAE9794B9B2917F41E4591D3ADB34 /* Build configuration list for PBXNativeTarget "SwiftyJSON" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05913A745A4784BE1B2E11478D5BA7BD /* Debug */,
+				D2A979AFA00D3FF6B281CCFA47E02E49 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7C02005810BD0D96EA2AE42D9E865BF7 /* Build configuration list for PBXNativeTarget "Pods-Smart HomeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0D6A0DF3B10FBCB69590C8CE60461D6 /* Debug */,
+				F51CF3F2051251F7609D272DDE99022F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7E0139FF38D920457516994AE4800D73 /* Build configuration list for PBXNativeTarget "ReachabilitySwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				150984E972C057EEC2657870FFA7A349 /* Debug */,
+				48B1F095A18F9DB621D71B94B153C92E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2385CE7B7E935C1F0B0679CAB70CF25 /* Build configuration list for PBXNativeTarget "Pods-Smart Home" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6592372EE9FE0EEA7FEB2EBDF69F1171 /* Debug */,
+				B5CA0256429A05ACA996E36EC12144F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4046A5FB0C99A02EC97AB085D107B95 /* Build configuration list for PBXNativeTarget "Pods-Smart HomeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2936F9E3D0DDB1D9C4E0283E9D99FA47 /* Debug */,
+				4503033AC731518470343E4CE3668DDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+}

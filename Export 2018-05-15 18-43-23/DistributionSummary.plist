@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Smart Home.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>F0C0F71C09DABE0F381D5DD84CA78D7D19F36AE1</string>
+				<key>dateExpires</key>
+				<string>11/5/2019</string>
+				<key>type</key>
+				<string>iOS Development</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>F0C0F71C09DABE0F381D5DD84CA78D7D19F36AE1</string>
+						<key>dateExpires</key>
+						<string>11/5/2019</string>
+						<key>type</key>
+						<string>iOS Development</string>
+					</dict>
+					<key>name</key>
+					<string>Reachability.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>B79T6KZ99E</string>
+						<key>name</key>
+						<string>Joshua Wong (Personal Team)</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>B79T6KZ99E.com.josh.smartcontroller</string>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>B79T6KZ99E.com.josh.smartcontroller</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>Smart Home.app</string>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>B79T6KZ99E</string>
+				<key>name</key>
+				<string>Joshua Wong (Personal Team)</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

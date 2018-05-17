@@ -1,0 +1,8 @@
+
+App Thinning Size Report for All Variants of Smart Home
+
+Variant: Smart Home-iPhone 6s.ipa
+Supported devices: iPhone 6s
+App + On Demand Resources size: 2.4 MB compressed, 6.9 MB uncompressed
+App size: 2.4 MB compressed, 6.9 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
