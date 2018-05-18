@@ -9,8 +9,10 @@
 import UIKit
 
 protocol Plug {
-	// get state of power and status LED
-	func getCommonStates() -> (pwr: Bool?, led: Bool?)
+	
+	var has_led: Bool {
+		get
+	}
 	
 	// get unit turned on time
 	func getUpTime() -> (Bool, Int?, Int?, Int?)
@@ -20,6 +22,9 @@ protocol Plug {
 	
 	// change state of power
 	func changeRelayState(state: Bool) -> Bool?
+	
+	// get state of power and status LED
+	func getCommonStates() -> (pwr: Bool?, led: Bool?)
 	
 	// change state of status LED
 	func changeLEDState(state: Bool) -> Bool?

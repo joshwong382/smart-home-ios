@@ -14,9 +14,17 @@ class TPLINK: Plug {
 	init() {
 		print("Using TP-LINK Plug")
 	}
-	
-	// Update Status Functions
 
+	var has_led: Bool {
+		get {
+			// TPLINK API does have LEDs
+			return true
+		}
+	}
+	
+	// Update States
+	
+	// get state of power and status LED
 	func getCommonStates() -> (pwr: Bool?, led: Bool?) {
 		
 		// Get Plug Info
@@ -27,7 +35,7 @@ class TPLINK: Plug {
 		if (!connection.ableConnect()) { return (nil, nil) }
 		
 		let response = decrypt_req(data: request!)
-
+		
 		var json = response.trimmingCharacters(in: .whitespacesAndNewlines)
 		json = String(response.dropFirst(3))
 		json = "{" + json
@@ -40,20 +48,20 @@ class TPLINK: Plug {
 		
 		/*
 		if let range = json.range(of: "\"relay_state\":") {
-			let relay = json[range.upperBound...]
-			let power: Int = Int(String(relay[relay.startIndex]))!
-			pwr = Bool(truncating: power as NSNumber)
+		let relay = json[range.upperBound...]
+		let power: Int = Int(String(relay[relay.startIndex]))!
+		pwr = Bool(truncating: power as NSNumber)
 		}
 		
 		if let range2 = json.range(of: "\"led_off\":") {
-			let relay2 = json[range2.upperBound...]
-			let led_pwr: Int = Int(String(relay2[relay2.startIndex]))!
-			led = Bool(truncating: led_pwr as NSNumber)
+		let relay2 = json[range2.upperBound...]
+		let led_pwr: Int = Int(String(relay2[relay2.startIndex]))!
+		led = Bool(truncating: led_pwr as NSNumber)
 		}*/
 		
 		return (pwr, led)
 	}
-
+	
 	// JSON interface functions
 
 	func getUpTime() -> (Bool, Int?, Int?, Int?) {
@@ -114,7 +122,8 @@ class TPLINK: Plug {
 		}
 		return nil
 	}
-
+	
+	// change state of status LED
 	func changeLEDState(state: Bool) -> Bool? {
 		let led_on = "{\"system\":{\"set_led_off\":{\"off\":0}}}"
 		let led_off = "{\"system\":{\"set_led_off\":{\"off\":1}}}"

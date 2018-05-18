@@ -34,22 +34,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	var start_time: UInt64 = 0
 	var on_time: Int = 0
 	
-	// Define TP-Link HS Series JSON Requests
-	let on_req = """
-	{"system":{"set_relay_state":{"state":1}}}
-	"""
-	///let on_req = "{\"system\":{\"set_relay_state\":{\"state\":1}}}"
-	let off_req = "{\"system\":{\"set_relay_state\":{\"state\":0}}}"
-	let info_req = "{\"system\":{\"get_sysinfo\":null}}"
-	let led_on = "{\"system\":{\"set_led_off\":{\"off\":0}}}"
-	
-	
 	override func viewDidLoad() {
+		
+		super.viewDidLoad()
 		
 		// Define Plug Type
 		api = TPLINK()
 		
-		super.viewDidLoad()
+		// Check if LED is available
+		if !(api?.has_led)! {
+			led_lbl.isHidden = true
+			led_sw.isHidden = true
+			led_sw.isEnabled = false
+		}
+		
 		// keyboard
 		url_txt.delegate = self
 		
@@ -61,7 +59,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		startMonitoring()
 		updateCommonStates()
 		prev_connected = connected
-		
 		
 	}
 	
@@ -167,8 +164,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	func displayError() {
 		green_light.isHidden = true
 		red_light.isHidden = true
-		led_sw.isHidden = true
-		led_lbl.isHidden = true
+		
+		if (api?.has_led)! {
+			led_sw.isHidden = true
+			led_lbl.isHidden = true
+		}
+		
 		powerButton.isEnabled = false
 		uptime_lbl.text = "Error: Cannot Connect!"
 		uptime_lbl.textColor = UIColor.red
@@ -179,9 +180,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	func displayNormal() {
 		if (relay_state!) { green_light.isHidden = false; red_light.isHidden = true }
 		else { red_light.isHidden = false; green_light.isHidden = true }
-		led_lbl.isHidden = false
-		led_sw.isHidden = false
-		led_sw.setOn(!led_state!, animated: false)
+		
+		if (api?.has_led)! {
+			led_lbl.isHidden = false
+			led_sw.isHidden = false
+			led_sw.setOn(!led_state!, animated: false)
+		}
+		
 		powerButton.isEnabled = true
 		uptime_lbl.textColor = UIColor.white
 		prev_connected = connected
