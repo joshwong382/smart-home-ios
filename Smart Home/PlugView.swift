@@ -65,6 +65,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		
 	}
 	
+	// Override screen touch
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+		updateCommonStates()
+		super.touchesBegan(touches, with: event)
+	}
+	
 	@IBAction func powerPressed(_ sender: Any) {
 		
 		// Disable switch while operating
@@ -184,28 +190,36 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	
 	// Include displaying Uptime
 	func updateCommonStates() {
-		(relay_state, led_state) = api!.getCommonStates()
 		
-		// Check connection
-		if (!connection.ableConnect() || relay_state == nil || led_state == nil) {
-			displayError()
-			return
+		DispatchQueue.global().async {
+
+			(self.relay_state, self.led_state) = api!.getCommonStates()
+			
+			DispatchQueue.main.async {
+
+				// Check connection
+				if (!connection.ableConnect() || self.relay_state == nil || self.led_state == nil) {
+					self.displayError()
+					return
+				}
+				
+				var valid = true
+				self.displayNormal()
+				
+				// Time
+				var h,m: Int?
+				(valid, h,m,_) = api!.getUpTime()
+				if (!valid) {
+					self.displayError()
+					return
+				}
+				let hS = twoDigitInt(int: h!)
+				let mS = twoDigitInt(int: m!)
+				self.uptime_lbl.text = "Uptime: \(hS)h \(mS)m"
+				return
+				
+			}
 		}
-		
-		var valid = true
-		displayNormal()
-		
-		// Time
-		var h,m: Int?
-		(valid, h,m,_) = api!.getUpTime()
-		if (!valid) {
-			displayError()
-			return
-		}
-		let hS = twoDigitInt(int: h!)
-		let mS = twoDigitInt(int: m!)
-		uptime_lbl.text = "Uptime: \(hS)h \(mS)m"
-		return
 	}
 
 	// Network Reachability Functions

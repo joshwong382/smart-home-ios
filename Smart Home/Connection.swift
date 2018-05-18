@@ -95,27 +95,16 @@ class Connection {
 		// Retry until timeout of 2s
 		var loop = true
 		let timeout = DispatchTime.now().uptimeNanoseconds
+		
 		while (loop) {
 			switch outputStream.streamStatus {
-			case .error:
-				return (false, nil)
-			case .notOpen:
+			case .error, .notOpen, .atEnd, .closed:
 				return (false, nil)
 			case .opening:
 				break
-			case .open:
+			case .open, .reading, .writing:
 				loop = false
 				break
-			case .reading:
-				loop = false
-				break
-			case .writing:
-				loop = false
-				break
-			case .atEnd:
-				return (false, nil)
-			case .closed:
-				return (false, nil)
 			}
 			if (DispatchTime.now().uptimeNanoseconds - timeout > UInt64(2e9)) { return (false, [0]) }
 		}
