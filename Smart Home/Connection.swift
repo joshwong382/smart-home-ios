@@ -70,7 +70,7 @@ class Connection {
 		// Check IP
 		let parts = ip_str.components(separatedBy: ".")
 		let nums = parts.compactMap { Int($0) }
-		if !(parts.count == 4 && nums.count == 4 && nums.filter { $0 >= 0 && $0 < 256}.count == 4) {
+		if !(parts.count == 4 && nums.count == 4 && nums.filter { $0 >= 0 && $0 < 255}.count == 4) {
 			return (false, nil, nil)
 		}
 		
