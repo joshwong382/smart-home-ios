@@ -14,10 +14,16 @@ class JSON_CONN {
 	var connected: Bool = false
 	
 	init() {
-		if (testPOST() == "SUCCESS") {
-			connected = true
-			print("Connected to Josh's Server")
-		}
+		/*DispatchQueue.global().async {
+			let success = self.testPOST()
+			
+			DispatchQueue.main.async {
+				if (success == "SUCCESS") {
+					self.connected = true
+					print("Connected to Josh's Server")
+				}
+			}
+		}*/
 	}
 	
 	private func isValidURL(url: String?) -> Bool {
@@ -25,7 +31,7 @@ class JSON_CONN {
 		//Check for nil
 		if let url = url {
 			// create NSURL instance
-			if let urlobj = URL(string: url) {
+			if URL(string: url) != nil {
 				return true
 			}
 		}

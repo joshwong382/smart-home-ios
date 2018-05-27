@@ -29,6 +29,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	@IBOutlet weak var url_txt: UITextField!
 	@IBOutlet weak var local_remote_SW: UISegmentedControl!
 	
+	// Reachability
+	let reachability = Reachability()!
+	
 	var prev_connected = false
 	var connected = false
 	
@@ -40,20 +43,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	override func viewDidLoad() {
 		
 		super.viewDidLoad()
+		displayWait(begin: true)
 		
 		// test networking
 		setenv("CFNETWORK_DIAGNOSTICS", "0", 1)
+		var override_remote = false
 		
-		// Default Plug Type
-		local_remote_switched_main()
-		
-		// Check if LED is available
-		while (api == nil) {}
-		if !(api?.has_led)! {
-			led_lbl.isHidden = true
-			led_sw.isHidden = true
-			led_sw.isEnabled = false
+		// Check reachability and determine local or remote
+		if (reachability.connection == .none) { displayError() }
+		else if (reachability.connection == .wifi) { local_remote_SW.selectedSegmentIndex = 0 }	// WiFi
+		else if (reachability.connection == .cellular) {
+			// Cellular
+			local_remote_SW.selectedSegmentIndex = 1
+			override_remote = true
 		}
+		
+		// Default Plug Type and create API class object
+		local_remote_switched_main(override: override_remote)
 		
 		// keyboard
 		url_txt.delegate = self
@@ -73,34 +79,34 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	}
 	
 	// Local or Remote Switched
-	func local_remote_switched_main() {
+	func local_remote_switched_main(override: Bool = false) {
 
 		var local_ip: String? = nil
 		let selected_index = local_remote_SW.selectedSegmentIndex
-		
-		if (selected_index == 0) {
+		if (selected_index == 0 && !override) {
 			url_txt.isHidden = false
 			url_txt.isEnabled = true
+			
+			// IP is get from update_connection_text
 			local_ip = update_connection_text()
+			api = TPLINK_LOCAL(ip: local_ip!)
+			
+			updateCommonStates()
+			prev_connected = connected
 		}
 		else {
 			url_txt.isHidden = true
 			url_txt.isEnabled = false
-		}
-		
-		DispatchQueue.global().async {
-			if (selected_index == 0) {
-				// IP is get from update_connection_text
-				api = TPLINK_LOCAL(ip: local_ip!)
-			} else {
+			DispatchQueue.global().async {
 				api = TPLINK_REMOTE(_token: tplink_token, _domain: tplink_region, _devid: tplink_devid)
-			}
-		
-			DispatchQueue.main.async {
-				self.updateCommonStates()
-				self.prev_connected = self.connected
+				
+				DispatchQueue.main.async {
+					self.updateCommonStates()
+					self.prev_connected = self.connected
+				}
 			}
 		}
+
 	}
 	
 	@IBAction func local_Remote_Switched(_ sender: Any) {
@@ -208,7 +214,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	
 	// UI display modules
 	
-	func displayWait() {
+	func displayWait(begin: Bool = false) {
 		green_light.isHidden = true
 		red_light.isHidden = true
 		
@@ -216,8 +222,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		led_lbl.isHidden = true
 		
 		powerButton.isEnabled = false
-		uptime_lbl.text = "Please Wait..."
-		print("Please Wait")
+		if (!begin) {
+			uptime_lbl.text = "Please Wait..."
+		} else {
+			uptime_lbl.text = "Smart Home\nBy Joshua Wong"
+		}
+		
+		local_remote_SW.isEnabled = false
 	}
 	
 	func displayError() {
@@ -234,6 +245,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		uptime_lbl.textColor = UIColor.red
 		prev_connected = connected
 		connected = false
+		
+		local_remote_SW.isEnabled = true
 	}
 	
 	func displayNormal() {
@@ -250,12 +263,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		uptime_lbl.textColor = UIColor.white
 		prev_connected = connected
 		connected = true
+		
+		local_remote_SW.isEnabled = true
 	}
+
 	
 	// Include displaying Uptime
 	func updateCommonStates() {
 		
-		DispatchQueue.global().async {
+		let serialQueue = DispatchQueue(label: "UPDATE_STATUS")
+		
+		serialQueue.async {
 
 			(self.relay_state, self.led_state) = api!.getCommonStates()
 			
@@ -287,19 +305,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	}
 
 	// Network Reachability Functions
-	let reachability = Reachability()!
 	
 	@objc func reachabilityChanged(notification: Notification) {
-		updateCommonStates()
-		/*let reachability = notification.object as! Reachability
-		switch reachability.currentReachabilityStatus {
-		case .notReachable:
-			debugPrint(“Network became unreachable”)
-		case .reachableViaWiFi:
-			debugPrint(“Network reachable through WiFi”)
-		case .reachableViaWWAN:
-			debugPrint(“Network reachable through Cellular Data”)
-		}*/
+		let reachability = notification.object as! Reachability
+		switch reachability.connection {
+		case .none:
+			//debugPrint("Network became unreachable")
+			displayError()
+		case .wifi:
+			print("On WiFi")
+			//updateCommonStates()
+		case .cellular:
+			print("On Cellular")
+			//updateCommonStates()
+		}
 	}
 	
 	func startMonitoring() {
