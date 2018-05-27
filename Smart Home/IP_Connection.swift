@@ -1,5 +1,5 @@
 //
-//  Connection.swift
+//  IP_Connection.swift
 //  Smart Home
 //
 //  Created by Joshua Wong on 14/5/2018.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Connection {
+class IP_CONN {
 	
 	let default_port = 9999
 	

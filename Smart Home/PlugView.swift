@@ -11,8 +11,10 @@ import Reachability
 import SwiftyJSON
 
 var def_ip: String = "192.168.1.201"
-var connection: Connection = Connection(string: def_ip)
-var api: Plug?
+var tplink_token: String = "75e5102d-A7mBwUeGJeO1Kqgopo6mrZ6"
+var tplink_region: String = "https://aps1-wap.tplinkcloud.com"
+var tplink_devid: String = "800657D0D18FB9E97BF5DFAAE62F903818A76421"
+var api: Plug? = nil
 
 class ViewController: UIViewController, UITextFieldDelegate {
 	
@@ -25,6 +27,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	@IBOutlet weak var led_sw: UISwitch!
 	@IBOutlet weak var uptime_lbl: UILabel!
 	@IBOutlet weak var url_txt: UITextField!
+	@IBOutlet weak var local_remote_SW: UISegmentedControl!
 	
 	var prev_connected = false
 	var connected = false
@@ -38,10 +41,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		
 		super.viewDidLoad()
 		
-		// Define Plug Type
-		api = TPLINK()
+		// test networking
+		setenv("CFNETWORK_DIAGNOSTICS", "0", 1)
+		
+		// Default Plug Type
+		local_remote_switched_main()
 		
 		// Check if LED is available
+		while (api == nil) {}
 		if !(api?.has_led)! {
 			led_lbl.isHidden = true
 			led_sw.isHidden = true
@@ -57,15 +64,48 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		//url_txt.text = conn_ip + ":" + conn_port
 		
 		startMonitoring()
-		updateCommonStates()
-		prev_connected = connected
-		
 	}
 	
 	// Override screen touch
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
 		updateCommonStates()
 		super.touchesBegan(touches, with: event)
+	}
+	
+	// Local or Remote Switched
+	func local_remote_switched_main() {
+
+		var local_ip: String? = nil
+		let selected_index = local_remote_SW.selectedSegmentIndex
+		
+		if (selected_index == 0) {
+			url_txt.isHidden = false
+			url_txt.isEnabled = true
+			local_ip = update_connection_text()
+		}
+		else {
+			url_txt.isHidden = true
+			url_txt.isEnabled = false
+		}
+		
+		DispatchQueue.global().async {
+			if (selected_index == 0) {
+				// IP is get from update_connection_text
+				api = TPLINK_LOCAL(ip: local_ip!)
+			} else {
+				api = TPLINK_REMOTE(_token: tplink_token, _domain: tplink_region, _devid: tplink_devid)
+			}
+		
+			DispatchQueue.main.async {
+				self.updateCommonStates()
+				self.prev_connected = self.connected
+			}
+		}
+	}
+	
+	@IBAction func local_Remote_Switched(_ sender: Any) {
+		displayWait()
+		local_remote_switched_main()
 	}
 	
 	@IBAction func powerPressed(_ sender: Any) {
@@ -133,33 +173,52 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		}
 	}
 	
-	func check_urltext_valid() -> Bool {
+	func check_urltext_valid() -> IP_CONN {
 		
+		var connection: IP_CONN
 		// Check valid URL
 		if (url_txt.text == nil) {
-			// Establish New Connection
-			connection = Connection(string: def_ip)
-			return connection.isValid()
+			connection = IP_CONN(string: def_ip)
+		} else {
+			connection = IP_CONN(string: url_txt.text!)
 		}
-		
-		// Establish New Connection
-		connection = Connection(string: url_txt.text!)
-		return connection.isValid()
+		return connection
 	}
 	
-	func textFieldShouldReturn(_ scoreText: UITextField) -> Bool {
-		self.view.endEditing(true)
-		if (check_urltext_valid()) {
-			updateCommonStates()
+	func update_connection_text() -> String? {
+		let connection = check_urltext_valid()
+		
+		if (connection.isValid()) {
 			url_txt.text = connection.returnIP()! + ":" + String(connection.returnPort()!)
 		} else {
 			url_txt.textColor = UIColor.red
 			url_txt.text = "Invalid IP or port"
 		}
+		
+		return connection.returnIP()
+	}
+	
+	func textFieldShouldReturn(_ scoreText: UITextField) -> Bool {
+		self.view.endEditing(true)
+		
+		// Switch the Conection
+		local_remote_switched_main()
 		return true
 	}
 	
 	// UI display modules
+	
+	func displayWait() {
+		green_light.isHidden = true
+		red_light.isHidden = true
+		
+		led_sw.isHidden = true
+		led_lbl.isHidden = true
+		
+		powerButton.isEnabled = false
+		uptime_lbl.text = "Please Wait..."
+		print("Please Wait")
+	}
 	
 	func displayError() {
 		green_light.isHidden = true
@@ -203,7 +262,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 			DispatchQueue.main.async {
 
 				// Check connection
-				if (!connection.ableConnect() || self.relay_state == nil || self.led_state == nil) {
+				if (self.relay_state == nil || self.led_state == nil) {
 					self.displayError()
 					return
 				}

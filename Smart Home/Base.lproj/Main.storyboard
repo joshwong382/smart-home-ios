@@ -46,16 +46,6 @@
                                 <rect key="frame" x="176" y="269" width="22" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="192.168.1.201:9999" borderStyle="roundedRect" placeholder="URL[:port]" textAlignment="center" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Q0T-YL-YV7">
-                                <rect key="frame" x="82" y="35" width="243" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
-                                <connections>
-                                    <action selector="urltxt_editing_start:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="ARa-T9-O2p"/>
-                                </connections>
-                            </textField>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aIK-Af-1L4">
                                 <rect key="frame" x="185" y="512" width="51" height="31"/>
                                 <connections>
@@ -76,6 +66,27 @@
                                     <action selector="powerPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mai-wB-XSO"/>
                                 </connections>
                             </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="992-dc-gjz">
+                                <rect key="frame" x="126" y="28" width="123" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Local"/>
+                                    <segment title="Remote"/>
+                                </segments>
+                                <connections>
+                                    <action selector="local_Remote_Switched:" destination="BYZ-38-t0r" eventType="valueChanged" id="Fz6-Wp-ACy"/>
+                                </connections>
+                            </segmentedControl>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="192.168.1.201:9999" borderStyle="roundedRect" placeholder="URL[:port]" textAlignment="center" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Q0T-YL-YV7">
+                                <rect key="frame" x="101" y="65" width="201" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                <connections>
+                                    <action selector="urltxt_editing_start:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="ARa-T9-O2p"/>
+                                </connections>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -94,6 +105,7 @@
                         <outlet property="green_light" destination="50J-3z-QET" id="27P-KW-zeO"/>
                         <outlet property="led_lbl" destination="cc0-zJ-qin" id="ypw-SV-eeo"/>
                         <outlet property="led_sw" destination="aIK-Af-1L4" id="CUB-WG-fSF"/>
+                        <outlet property="local_remote_SW" destination="992-dc-gjz" id="D6s-nA-a4r"/>
                         <outlet property="powerButton" destination="wSm-Nq-mLV" id="3ha-Sm-Fxv"/>
                         <outlet property="red_light" destination="aFg-UJ-joc" id="Eg1-Zm-2Jo"/>
                         <outlet property="uptime_lbl" destination="ZRB-ds-vM8" id="VLP-jd-bU2"/>

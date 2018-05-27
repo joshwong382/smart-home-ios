@@ -30,3 +30,15 @@ protocol Plug {
 	func changeLEDState(state: Bool) -> Bool?
 	
 }
+
+protocol Local {
+	var connection: IP_CONN {
+		get set
+	}
+}
+
+protocol Remote {
+	var connection: JSON_CONN {
+		get set
+	}
+}

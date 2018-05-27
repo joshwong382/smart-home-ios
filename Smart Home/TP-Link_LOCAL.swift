@@ -1,5 +1,5 @@
 //
-//  TP-Link API.swift
+//  TP-Link_LOCAL.swift
 //  Smart Home
 //
 //  Created by Joshua Wong on 14/5/2018.
@@ -9,10 +9,26 @@
 import UIKit
 import SwiftyJSON
 
-class TPLINK: Plug {
+class TPLINK_LOCAL: Plug, Local {
 	
-	init() {
-		print("Using TP-LINK Plug")
+	var connection: IP_CONN
+	
+	init(ip: String) {
+		connection = IP_CONN(string: ip)
+		if (connection.isValid()) {
+			print("Using TP-LINK Local Plug")
+		} else {
+			print("Connection Error")
+		}
+	}
+	
+	init(conn: IP_CONN) {
+		connection = conn
+		if (connection.isValid()) {
+			print("Using TP-LINK Local Plug")
+		} else {
+			print("Connection Error")
+		}
 	}
 
 	var has_led: Bool {
@@ -21,6 +37,7 @@ class TPLINK: Plug {
 			return true
 		}
 	}
+	
 	
 	// Update States
 	
