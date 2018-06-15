@@ -39,6 +39,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	var led_state: Bool? = nil
 	var start_time: UInt64 = 0
 	var on_time: Int = 0
+	var reachability_init = false
+	var updating_common_states = false
 	
 	override func viewDidLoad() {
 		
@@ -49,9 +51,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		setenv("CFNETWORK_DIAGNOSTICS", "0", 1)
 		var override_remote = false
 		
+		 /*-----------------------------------------------
+		 /
+		 /	REACHABILITY for DEFAULT LOCAL/REMOTE SWITCH
+		 /
+		 / ---------------------------------------------*/
+		
 		// Check reachability and determine local or remote
-		if (reachability.connection == .none) { displayError() }
-		else if (reachability.connection == .wifi) { local_remote_SW.selectedSegmentIndex = 0 }	// WiFi
+		if (reachability.connection == .wifi) { local_remote_SW.selectedSegmentIndex = 0 }	// WiFi
 		else if (reachability.connection == .cellular) {
 			// Cellular
 			local_remote_SW.selectedSegmentIndex = 1
@@ -59,7 +66,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		}
 		
 		// Default Plug Type and create API class object
-		local_remote_switched_main(override: override_remote)
+		local_remote_switched_main(override: override_remote, init_startup: true)
 		
 		// keyboard
 		url_txt.delegate = self
@@ -78,8 +85,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		super.touchesBegan(touches, with: event)
 	}
 	
-	// Local or Remote Switched
-	func local_remote_switched_main(override: Bool = false) {
+	/*-----------------------------------------------
+	/
+	/	LOCAL/REMOTE SWITCH + UPDATE CONNECTION DETAILS
+	/
+	/ ---------------------------------------------*/
+	
+	// Creates a new connection (override: overrides to remote connection)
+	func local_remote_switched_main(override: Bool = false, init_startup: Bool = false) {
 
 		var local_ip: String? = nil
 		let selected_index = local_remote_SW.selectedSegmentIndex
@@ -89,6 +102,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
 			
 			// IP is get from update_connection_text
 			local_ip = update_connection_text()
+			
+			// Check IP Validity
+			if (local_ip == nil) {
+				api = nil
+				displayError()
+				return
+			}
+			
+			// Check if previous API is NULL and display WAIT
+			if (api == nil && init_startup == false) {
+				displayWait()
+			}
+			
 			api = TPLINK_LOCAL(ip: local_ip!)
 			
 			updateCommonStates()
@@ -130,9 +156,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		
 		// If update state just changed back online don't do anything
 		DispatchQueue.global().async {
-			let success = api!.changeRelayState(state: !ui_relay_state!)
+			var cancelled: Bool
+			var success: Bool?
+			(cancelled, success) = api!.changeRelayState(state: !ui_relay_state!)
 			
 			DispatchQueue.main.async {
+				
+				// Check if cancelled
+				if (cancelled) { return }
+				
 				// Check if disconnected
 				if (self.connected && self.prev_connected) {
 					if (success == nil) {
@@ -153,9 +185,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		DispatchQueue.global().async {
 			
 			// Change LED state
-			let success: Bool? = api!.changeLEDState(state: is_on)
+			var cancelled: Bool
+			var success: Bool?
+			(cancelled, success) = api!.changeLEDState(state: is_on)
 			
 			DispatchQueue.main.async {
+				
+				// Check if cancelled
+				if (cancelled) { return }
 				
 				// Update UI
 				if (success == nil) {
@@ -172,11 +209,26 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		led_sw.isEnabled = true
 	}
 	
+	/*-----------------------------------------------
+	/
+	/	UI CHANGES
+	/
+	/ ---------------------------------------------*/
+	
 	@IBAction func urltxt_editing_start(_ sender: Any) {
 		url_txt.textColor = UIColor.black
 		if (url_txt.text == "Invalid IP or port") {
 			url_txt.text = ""
 		}
+	}
+	
+	// URL TEXT EDIT ENDED
+	func textFieldShouldReturn(_ scoreText: UITextField) -> Bool {
+		self.view.endEditing(true)
+		
+		// Switch the Conection
+		local_remote_switched_main()
+		return true
 	}
 	
 	func check_urltext_valid() -> IP_CONN {
@@ -204,14 +256,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		return connection.returnIP()
 	}
 	
-	func textFieldShouldReturn(_ scoreText: UITextField) -> Bool {
-		self.view.endEditing(true)
-		
-		// Switch the Conection
-		local_remote_switched_main()
-		return true
-	}
-	
 	// UI display modules
 	
 	func displayWait(begin: Bool = false) {
@@ -222,6 +266,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		led_lbl.isHidden = true
 		
 		powerButton.isEnabled = false
+		uptime_lbl.textColor = UIColor.white
 		if (!begin) {
 			uptime_lbl.text = "Please Wait..."
 		} else {
@@ -235,14 +280,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		green_light.isHidden = true
 		red_light.isHidden = true
 		
-		if (api?.has_led)! {
+		if (api == nil) {
 			led_sw.isHidden = true
 			led_lbl.isHidden = true
+			uptime_lbl.text = "Error: Invalid Connection!"
+		}
+		else if (api?.has_led)! {
+			led_sw.isHidden = true
+			led_lbl.isHidden = true
+			uptime_lbl.text = "Error: Cannot Connect!"
 		}
 		
-		powerButton.isEnabled = false
-		uptime_lbl.text = "Error: Cannot Connect!"
 		uptime_lbl.textColor = UIColor.red
+		powerButton.isEnabled = false
 		prev_connected = connected
 		connected = false
 		
@@ -267,21 +317,43 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		local_remote_SW.isEnabled = true
 	}
 
+	/*-----------------------------------------------
+	/
+	/	STATUS UPDATES + API FUNCTIONS
+	/
+	/ ---------------------------------------------*/
 	
 	// Include displaying Uptime
 	func updateCommonStates() {
 		
-		let serialQueue = DispatchQueue(label: "UPDATE_STATUS")
+		// Check connection first
+		if (reachability.connection == .none) {
+			displayError()
+			return
+		}
 		
+		// Check if it was previously updating
+		if (updating_common_states) {
+			return
+		}
+		
+		// Real Update
+		updating_common_states = true
+		let serialQueue = DispatchQueue(label: "UPDATE_STATUS")
 		serialQueue.async {
 
-			(self.relay_state, self.led_state) = api!.getCommonStates()
+			var cancelled: Bool
+			(cancelled, self.relay_state, self.led_state) = api!.getCommonStates()
 			
 			DispatchQueue.main.async {
 
+				// Check if cancelled
+				if (cancelled) { return }
+				
 				// Check connection
 				if (self.relay_state == nil || self.led_state == nil) {
 					self.displayError()
+					self.updating_common_states = false
 					return
 				}
 				
@@ -293,11 +365,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
 				(valid, h,m,_) = api!.getUpTime()
 				if (!valid) {
 					self.displayError()
+					self.updating_common_states = false
 					return
 				}
 				let hS = twoDigitInt(int: h!)
 				let mS = twoDigitInt(int: m!)
 				self.uptime_lbl.text = "Uptime: \(hS)h \(mS)m"
+				self.updating_common_states = false
 				return
 				
 			}
@@ -307,17 +381,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	// Network Reachability Functions
 	
 	@objc func reachabilityChanged(notification: Notification) {
-		let reachability = notification.object as! Reachability
-		switch reachability.connection {
-		case .none:
-			//debugPrint("Network became unreachable")
-			displayError()
-		case .wifi:
-			print("On WiFi")
-			//updateCommonStates()
-		case .cellular:
-			print("On Cellular")
-			//updateCommonStates()
+		if (!reachability_init) { reachability_init = true }
+		else {
+			let reachability = notification.object as! Reachability
+			switch reachability.connection {
+			case .none:
+				//debugPrint("Network became unreachable")
+				displayError()
+			case .wifi:
+				print("On WiFi")
+				updateCommonStates()
+			case .cellular:
+				print("On Cellular")
+				updateCommonStates()
+			}
 		}
 	}
 	

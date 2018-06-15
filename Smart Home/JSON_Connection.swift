@@ -9,21 +9,32 @@
 import UIKit
 import SwiftyJSON
 
-class JSON_CONN {
+class JSON_CONN: Connection {
 	
-	var connected: Bool = false
+	internal var timeout: Double {
+		return 5 // Timeout 5 seconds
+	}
 	
-	init() {
-		/*DispatchQueue.global().async {
-			let success = self.testPOST()
-			
-			DispatchQueue.main.async {
-				if (success == "SUCCESS") {
-					self.connected = true
-					print("Connected to Josh's Server")
-				}
-			}
-		}*/
+	private var conn_url: URL?
+	private var valid: Bool = false
+	private var queue = [URLSessionDataTask]()
+	
+	/*-----------------------------------------------
+	/
+	/	INITIALIZE WITH URL AND/OR PORT
+	/
+	/ ---------------------------------------------*/
+	
+	init(url: URL) {
+		conn_url = url
+		valid = true
+	}
+	
+	init(url: String) {
+		if (isValidURL(url: url)) {
+			conn_url = URL(string: url)
+			valid = true
+		}
 	}
 	
 	private func isValidURL(url: String?) -> Bool {
@@ -66,22 +77,60 @@ class JSON_CONN {
 		return JSON(parseJSON: string)
 	}
 	
-	func testPOST() -> String? {
+	/*-----------------------------------------------
+	/
+	/	HTTP(S) JSON POST REQUESTS
+	/
+	/ ---------------------------------------------*/
+	
+	func testPOST() -> (cancelled: Bool, response: String?) {
 		let jsonObject: [String: Any]  = [
 			"test": "SUCCESS"
 		]
 		
-		return POST(url: "https://ca.josh-wong.net/public/testpost.php", json: JSONtoString(json: jsonObject))
+		return POST(url_override: URL(string: "https://ca.josh-wong.net/public/testpost.php"), json: JSONtoString(json: jsonObject))
 	}
 	
-	func POST(url: String, json: String) -> String? {
+	// Public Send Function
+	func send_string(json: String) -> (cancelled: Bool, response: String?) {
+		return POST(json: json)
+	}
+	
+	// Private Send Function with URL override
+	private func POST(url_override: URL? = nil, json: String) -> (cancelled: Bool, response: String?) {
 		
-		if (!isValidURL(url: url)) { return nil }
+		// Check Valid
+		if (!valid) { return (false, nil) }
 		
-		let url_type: URL = URL(string: url)!
+		// Check URL
+		var url_type: URL
+		if (url_override != nil) {
+			url_type = url_override!
+		} else {
+			if (conn_url == nil) {
+				return (false, nil)
+			} else {
+				url_type = conn_url!
+			}
+		}
+		
+		// Check existing queues with the same data
+		for operation_q in queue {
+			if (operation_q.taskDescription == json) {
+				operation_q.cancel()
+			}
+		}
+		
+		// Send Data
+		return POST_SubFunc(url_type: url_type, json: json)
+		
+	}
+	
+	private func POST_SubFunc(url_type: URL, json: String) -> (cancelled: Bool, response: String?) {
+		
 		let session = URLSession.shared
-		
 		var request = URLRequest(url: url_type)
+
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 		request.httpMethod = "POST"
 		request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
@@ -91,8 +140,7 @@ class JSON_CONN {
 		var success = false
 		
 		let task = session.dataTask(with: request as URLRequest) {
-			(
-			data, response, error) in
+			(data, response, error) in
 			
 			guard let data = data, let _:URLResponse = response, error == nil else {
 				print("error")
@@ -103,11 +151,26 @@ class JSON_CONN {
 			success = true
 		}
 		
+		// Define task by json
+		task.taskDescription = json
+		queue.append(task)
+		
+		let current_time = DispatchTime.now().uptimeNanoseconds
 		task.resume()
 		
-		// Wait til task comes back
-		while (!success) {}
+		// Wait til task comes back or timeout in 5 seconds
+		while (!success && DispatchTime.now().uptimeNanoseconds - current_time < UInt64(timeout*1e9)) {
+			
+			// Check for terminate
+			if (task.progress.isCancelled) {
+				print("Queue Terminated by Newer Queue!")
+				return (true, nil)
+			}
+			
+		}
 		
-		return dataString
+		return (false, dataString)
 	}
+	
 }
+

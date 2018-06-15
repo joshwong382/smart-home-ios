@@ -8,14 +8,26 @@
 
 import UIKit
 
-class IP_CONN {
+class IP_CONN: Connection {
 	
 	let default_port = 9999
+	
+	internal var timeout: Double {
+		return 5
+	}
 	
 	private var conn_ip: String?
 	private var conn_port: Int?
 	private var able_to_connect: Bool = false
 	private var valid: Bool = false
+	private var connected = false
+	private let queue = OperationQueue()
+
+	/*-----------------------------------------------
+	/
+	/	INITIALIZE WITH IP AND/OR PORT
+	/
+	/ ---------------------------------------------*/
 	
 	init(ip: String, port: Int) {
 		var valid: Bool
@@ -77,57 +89,137 @@ class IP_CONN {
 		return (true, ip_str, _port)
 	}
 	
-	// TCP Socket Functions
+	/*-----------------------------------------------
+	/
+	/	TCP SOCKET FUNCTIONS
+	/
+	/ ---------------------------------------------*/
 
-	private func sendReq(data: [UInt8]) -> (success: Bool, receive : [UInt8]?) {
+	// Success: nil = cancelled
+	private func sendReq(data: [UInt8]) -> (success: Bool?, receive: [UInt8]?) {
+		
+		// Check if connection valid
 		if (!self.valid) { return (false, [0]) }
-		var inp: InputStream?
-		var out: OutputStream?
-		Stream.getStreamsToHost(withName: self.conn_ip!, port: self.conn_port!, inputStream: &inp, outputStream: &out)
-		if (inp == nil || out == nil) { return (false, [0]) }
-		let inputStream = inp!
-		let outputStream = out!
 		
-		inputStream.open()
-		outputStream.open()
-		var buffer: [UInt8] = data
-		
-		// Retry until timeout of 2s
-		var loop = true
-		let timeout = DispatchTime.now().uptimeNanoseconds
-		
-		while (loop) {
-			switch outputStream.streamStatus {
-			case .error, .notOpen, .atEnd, .closed:
-				return (false, nil)
-			case .opening:
-				break
-			case .open, .reading, .writing:
-				loop = false
-				break
-			}
-			if (DispatchTime.now().uptimeNanoseconds - timeout > UInt64(2e9)) { return (false, [0]) }
+		// Convert data into a string for identifing
+		var name_identifier: String = ""
+		for num in data {
+			name_identifier += String(num)
 		}
-		outputStream.write(&buffer, maxLength: buffer.count)
-		let bufferSize = 1024
-		var inputBuffer = Array<UInt8>(repeating: 0, count: bufferSize)
-		inputStream.read(&inputBuffer, maxLength: bufferSize)
-		return (true, inputBuffer)
+		
+		// Check existing queues with the same data
+		for operation_q in queue.operations {
+			if (operation_q.name == name_identifier) {
+				operation_q.cancel()
+			}
+		}
+		
+		/*-----------------------------------------------
+		/
+		/	SEND DATA
+		/
+		/ ---------------------------------------------*/
+		
+		// Find detailed comments in JSON_Connection.swift in func POST
+		var reply: (success: Bool?, receive: [UInt8]?)
+		
+		var operation = BlockOperation()
+		
+		operation = BlockOperation {
+		
+			var inp: InputStream?
+			var out: OutputStream?
+			Stream.getStreamsToHost(withName: self.conn_ip!, port: self.conn_port!, inputStream: &inp, outputStream: &out)
+			if (inp == nil || out == nil) {
+				reply = (false, [0])
+				return
+			}
+			let inputStream = inp!
+			let outputStream = out!
+			
+			// Open Streams
+			inputStream.open()
+			outputStream.open()
+			var buffer: [UInt8] = data
+			
+			// Retry until timeout of 2s
+			var loop = true
+			let current_time = DispatchTime.now().uptimeNanoseconds
+			
+			while (loop) {
+				switch outputStream.streamStatus {
+				case .error, .notOpen, .atEnd, .closed:
+					reply = (false, nil)
+					return
+				case .opening:
+					break
+				case .open, .reading, .writing:
+					loop = false
+					break
+				}
+				
+				if (DispatchTime.now().uptimeNanoseconds - current_time > UInt64(self.timeout*1e9)) {
+					reply = (false, [0])
+					return
+				}
+				
+				if (operation.isCancelled) {
+					reply = (true, nil)
+					print("Queue Terminated by Newer Queue!")
+					return
+				}
+			}
+			
+			
+			// Analyze incoming data
+			outputStream.write(&buffer, maxLength: buffer.count)
+			let bufferSize = 1024
+			var inputBuffer = Array<UInt8>(repeating: 0, count: bufferSize)
+			inputStream.read(&inputBuffer, maxLength: bufferSize)
+			
+			reply = (true, inputBuffer)
+			return
+		}
+		
+		operation.name = name_identifier
+		
+		queue.addOperation(operation)
+		
+		while (!operation.isFinished) {}
+		return reply
 	}
 	
-	public func send_data(data: [UInt8]) -> [UInt8]? {
+	public func send_data(data: [UInt8]) -> (cancelled: Bool, result: [UInt8]?) {
+		
+		// Check Connection Valid
 		if (!self.valid) {
 			self.able_to_connect = false
-			return nil
+			return (false, nil)
 		}
-		var receive: [UInt8]?
-		(self.able_to_connect, receive) = sendReq(data: data)
-		if (receive == nil) { return nil }
 		
+		var receive: [UInt8]?
+		var cancelled: Bool?
+		
+		// Connect
+		(cancelled, receive) = sendReq(data: data)
+		
+		// Check if cancelled
+		if (cancelled == nil) {
+			return (true, [0])
+		}
+		else { self.able_to_connect = cancelled! }
+		
+		// Check if received
+		if (receive == nil) {
+			return (false, nil)
+		}
+		
+		// Parse response
 		var response: [UInt8] = Array()
 		for i in receive! {
 			if (i != 0) { response.append(i) }
 		}
-		return response
+		
+		return (false, response)
 	}
 }

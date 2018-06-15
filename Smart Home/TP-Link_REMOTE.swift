@@ -9,7 +9,16 @@
 import UIKit
 import SwiftyJSON
 
+
 class TPLINK_REMOTE: Plug, Remote {
+	
+	enum API: String {
+		case ON = "{\\\"system\\\":{\\\"set_relay_state\\\":{\\\"state\\\":1}}}"
+		case OFF = "{\\\"system\\\":{\\\"set_relay_state\\\":{\\\"state\\\":0}}}"
+		case LED_ON = "{\\\"system\\\":{\\\"set_led_off\\\":{\\\"off\\\":0}}}"
+		case LED_OFF = "{\\\"system\\\":{\\\"set_led_off\\\":{\\\"off\\\":1}}}"
+		case INFO = "{\\\"system\\\":{\\\"get_sysinfo\\\":null}}"
+	}
 	
 	var connection: JSON_CONN
 	private var token: String
@@ -18,10 +27,10 @@ class TPLINK_REMOTE: Plug, Remote {
 	
 	init(_token: String, _domain: String, _devid: String) {
 		print("Using TP-LINK Remote Plug")
-		connection = JSON_CONN()
 		token = _token
 		domain = _domain
 		devid = _devid
+		connection = JSON_CONN(url: _domain + "/?token=" + _token)
 	}
 	
 	var has_led: Bool {
@@ -35,107 +44,137 @@ class TPLINK_REMOTE: Plug, Remote {
 		return domain + "/?token=" + token
 	}
 	
-	private func getAPICalls(api: String) -> String? {
-		let apiDict: [String : String] = [
-			"ON": "{\\\"system\\\":{\\\"set_relay_state\\\":{\\\"state\\\":1}}}",
-			"OFF": "{\\\"system\\\":{\\\"set_relay_state\\\":{\\\"state\\\":0}}}",
-			"LED_ON": "{\\\"system\\\":{\\\"set_led_off\\\":{\\\"off\\\":0}}}",
-			"LED_OFF": "{\\\"system\\\":{\\\"set_led_off\\\":{\\\"off\\\":1}}}",
-			"INFO": "{\\\"system\\\":{\\\"get_sysinfo\\\":null}}"
-		]
-		
-		var string: String? = nil
-		if (apiDict[api] != nil) {
-			string = """
-			{"method":"passthrough", "params": {"deviceId": "
-			""" + devid + """
-			", "requestData": \"
-			""" + apiDict[api]! + """
-			\"}}
-			"""
-		}
-		return string
+	private func getAPICalls(api: API) -> String {
+		return """
+		{"method":"passthrough", "params": {"deviceId": "
+		""" + devid + """
+		", "requestData": \"
+		""" + api.rawValue + """
+		\"}}
+		"""
 	}
 	
 	// Update States
 	
 	// get state of power and status LED
-	func getCommonStates() -> (pwr: Bool?, led: Bool?) {
+	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
 		
 		// Get Plug Info
-		let response = connection.POST(url: getURL(), json: getAPICalls(api: "INFO")!)
+		let response = connection.send_string(json: getAPICalls(api: API.INFO))
+		
+		// Check Cancelled
+		if (response.cancelled) { return (true, nil, nil) }
 		
 		// Check Relay State
-		var json_obj: JSON = JSON(parseJSON: response!)
+		if (response.response == nil) { return (false, nil, nil) }
+		
+		var json_obj: JSON = JSON(parseJSON: response.response!)
 		json_obj = JSON(parseJSON: json_obj["result"]["responseData"].stringValue)
 		let pwr = json_obj["system"]["get_sysinfo"]["relay_state"].boolValue
 		let led = json_obj["system"]["get_sysinfo"]["led_off"].boolValue
 		
-		return (pwr, led)
+		return (false, pwr, led)
 	}
 	
 	// JSON interface functions
 	
-	func getUpTime() -> (Bool, Int?, Int?, Int?) {
+	func getUpTime() -> (cancelled: Bool, hour: Int?, min: Int?, sec: Int?) {
 		let result = getSpecificState(match: "on_time")
-		if (result == nil || result == "") { return (false, nil, nil, nil) }
-		let on_time: Int = Int(result!)!
+
+		// Check Cancelled and State
+		if (result.cancelled) { return (true, nil, nil, nil) }
+		if (result.state == nil || result.state == "") { return (false, nil, nil, nil) }
+		
+		let on_time: Int = Int(result.state!)!
 		var h, m, s: Int
 		(h,m,s) = secToTime(seconds: on_time)
 		//print(h,"h",m,"m",s,"s")
 		return (true, h,m,s)
 	}
 	
-	func getSpecificState(match: String) -> String? {
+	func getSpecificState(match: String) -> (cancelled: Bool, state: String?) {
 		// Get Plug Info
-		let response = connection.POST(url: getURL(), json: getAPICalls(api: "INFO")!)
+		let response = connection.send_string(json: getAPICalls(api: API.INFO))
+		
+		// Check cancelled
+		if (response.cancelled) { return (true, nil) }
+		
+		// Check response
+		if (response.response == nil) { return (false, nil) }
 		
 		// Check Relay State
-		var json_obj: JSON = JSON(parseJSON: response!)
-		let response_data = json_obj["result"]["responseData"].stringValue
-		json_obj = JSON(parseJSON: response_data)
-		let relay = json_obj["system"]["get_sysinfo"][match].stringValue
+		var json_obj: JSON? = JSON(parseJSON: response.response!)
+		if (json_obj == nil) { return (false, nil) }
 		
-		return relay
+		let response_data = json_obj!["result"]["responseData"].stringValue
+		
+		json_obj = JSON(parseJSON: response_data)
+		if (json_obj == nil) { return (false, nil) }
+		
+		let relay = json_obj!["system"]["get_sysinfo"][match].stringValue
+		
+		return (false, relay)
 	}
 	
-	func changeRelayState(state: Bool) -> Bool? {
+	func changeRelayState(state: Bool) -> (cancelled: Bool, success: Bool?) {
 		
-		var req: String
+		var req: API
 		if (state) {
-			req = "ON"
+			req = API.ON
 		}
 		else {
-			req = "OFF"
+			req = API.OFF
 		}
 		
 		// Get Plug Info
-		let response = connection.POST(url: getURL(), json: getAPICalls(api: req)!)
+		let response = connection.send_string(json: getAPICalls(api: req))
+		
+		// Check cancelled
+		if (response.cancelled) { return (true, nil) }
+		
+		// Check response
+		if (response.response == nil) { return (false, nil) }
 		
 		// Check Relay State Set
-		var json_obj: JSON = JSON(parseJSON: response!)
-		json_obj = JSON(parseJSON: json_obj["result"]["responseData"].stringValue)
-		let relay = json_obj["system"]["set_relay_state"]["err_code"].boolValue
-		return relay
+		var json_obj: JSON? = JSON(parseJSON: response.response!)
+		if (json_obj == nil) { return (false, nil) }
+		
+		json_obj = JSON(parseJSON: json_obj!["result"]["responseData"].stringValue)
+		if (json_obj == nil) { return (false, nil) }
+		
+		let relay = json_obj!["system"]["set_relay_state"]["err_code"].boolValue
+		
+		return (false, relay)
 	}
 	
 	// change state of status LED
-	func changeLEDState(state: Bool) -> Bool? {
-		var req: String
+	func changeLEDState(state: Bool) -> (cancelled: Bool, success: Bool?) {
+		var req: API
 		if (state) {
-			req = "LED_ON"
+			req = API.LED_ON
 		}
 		else {
-			req = "LED_OFF"
+			req = API.LED_OFF
 		}
 		
-		let response = connection.POST(url: getURL(), json: getAPICalls(api: req)!)
+		let response = connection.send_string(json: getAPICalls(api: req))
+		
+		// Check cancelled
+		if (response.cancelled) { return (true, nil) }
+		
+		// Check response
+		if (response.response == nil) { return (false, nil) }
 		
 		// Check Relay State Set
-		var json_obj: JSON = JSON(parseJSON: response!)
-		json_obj = JSON(parseJSON: json_obj["result"]["responseData"].stringValue)
-		let relay: Bool = json_obj["system"]["set_relay_state"]["err_code"].boolValue
-		return relay
+		var json_obj: JSON? = JSON(parseJSON: response.response!)
+		if (json_obj == nil) { return (false, nil) }
+		
+		json_obj = JSON(parseJSON: json_obj!["result"]["responseData"].stringValue)
+		if (json_obj == nil) { return (false, nil) }
+		
+		let relay: Bool = json_obj!["system"]["set_relay_state"]["err_code"].boolValue
+		
+		return (false, relay)
 	}
 	
 }
