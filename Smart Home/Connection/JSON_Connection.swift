@@ -163,10 +163,17 @@ class JSON_CONN: Connection {
 			
 			// Check for terminate
 			if (task.progress.isCancelled) {
-				print("Queue Terminated by Newer Queue!")
+				print("Task Terminated by Newer Task!")
 				return (true, nil)
 			}
 			
+		}
+		if (debug_contains(type: .JSON)) {
+			print("JSON RESPONSE")
+			print("/*******************************")
+			print(dataString ?? "RESPONSE NIL")
+			print("*******************************/")
+			print("\n\n")
 		}
 		
 		return (false, dataString)

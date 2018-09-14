@@ -38,6 +38,12 @@ class TPLINK_LOCAL: Plug, Local {
 		}
 	}
 	
+	var vendor_name: String {
+		get {
+			return "TP-LINK"
+		}
+	}
+	
 	/*-----------------------------------------------
 	/
 	/	STATES UPDATE

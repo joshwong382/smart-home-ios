@@ -9,8 +9,81 @@
 import UIKit
 import SwiftyJSON
 
+class TPLINK_REMOTE_LOGIN {
+	
+	private var token: String = ""
+	private var token_url: String = "https://wap.tplinkcloud.com"
+	private var uuid: String = "760fec46-3711-49a7-9c26-c46fb436da76"
+	
+	init() {}
+	
+	func get_devices(username: String?, password: String) -> (error: Bool, devices: [(api_url: String, device_id: String)]?) {
+		
+		if (token == "") {
+			return (true, nil)
+		}
+		
+		let devices_conn = JSON_CONN(url: token_url + "?token=" + token)
+		let request: JSON = [
+			"method": "getDeviceList"
+		]
+		
+		let response = devices_conn.send_string(json: request.rawString()!).response
+		if (response == nil) { return (true, nil) }
+		
+		var json_obj: JSON = JSON(parseJSON: response!)
+		
+		// Check Error Code
+		if (json_obj["error_code"].intValue != 0) {
+			return (true, nil)
+		}
+		
+		var devices = [(api_url: String, device_id: String)]()
+		
+		let devicelist = json_obj["result"]["deviceList"].arrayValue
+		for device in devicelist {
+			devices.append((api_url: device["appServerUrl"].stringValue, device_id: device["deviceid"].stringValue))
+		}
+		
+		return (false, devices)
+	}
+	
+	func token_from_login(username: String?, password: String) -> (error: Bool, token: String?) {
+		
+		let token_conn = JSON_CONN(url: token_url)
+		let request: JSON = [
+			"method": "login",
+			"params": [
+				"appType": "Kasa_Android",
+				"cloudUserName": username,
+				"cloudPassword": password,
+				"terminalUUID": uuid
+			]
+		]
+		
+		let response = token_conn.send_string(json: request.rawString()!).response
+		if (response == nil) { return (true, nil) }
+		
+		var json_obj: JSON = JSON(parseJSON: response!)
+		
+		// Print Error Message if there is one
+		if (json_obj["error_code"].intValue != 0) {
+			return (true, json_obj["msg"].stringValue)
+		}
+		
+		let potential_token: String = json_obj["result"]["token"].stringValue
+		
+		// Make sure token is more than 2 characters
+		if (potential_token.count < 2) {
+			return (true, nil)
+		}
+		
+		return (false, potential_token)
+	}
+	
+}
 
-class TPLINK_REMOTE: Plug, Remote {
+class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
 	
 	enum API: String {
 		case ON = "{\\\"system\\\":{\\\"set_relay_state\\\":{\\\"state\\\":1}}}"
@@ -20,10 +93,11 @@ class TPLINK_REMOTE: Plug, Remote {
 		case INFO = "{\\\"system\\\":{\\\"get_sysinfo\\\":null}}"
 	}
 	
-	var connection: JSON_CONN
-	private var token: String
-	private var domain: String
-	private var devid: String
+	var connection: JSON_CONN?
+	private var token = ""
+	private var domain: String = ""
+	private var devid: String = ""
+	private var token_expire: Bool = false
 	
 	init(_token: String, _domain: String, _devid: String) {
 		print("Using TP-LINK Remote Plug")
@@ -37,6 +111,12 @@ class TPLINK_REMOTE: Plug, Remote {
 		get {
 			// TPLINK API does have LEDs
 			return true
+		}
+	}
+	
+	var vendor_name: String {
+		get {
+			return "TP-LINK"
 		}
 	}
 	
@@ -54,13 +134,18 @@ class TPLINK_REMOTE: Plug, Remote {
 		"""
 	}
 	
+	func checkExpiry() -> Bool {
+		return token_expire
+	}
 	// Update States
 	
 	// get state of power and status LED
 	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
 		
+		if (token_expire) { return (false, nil, nil) }
+		
 		// Get Plug Info
-		let response = connection.send_string(json: getAPICalls(api: API.INFO))
+		let response = connection!.send_string(json: getAPICalls(api: API.INFO))
 		
 		// Check Cancelled
 		if (response.cancelled) { return (true, nil, nil) }
@@ -68,7 +153,16 @@ class TPLINK_REMOTE: Plug, Remote {
 		// Check Relay State
 		if (response.response == nil) { return (false, nil, nil) }
 		
+		
 		var json_obj: JSON = JSON(parseJSON: response.response!)
+		
+		// Check Token Expiry
+		if (json_obj["msg"].stringValue == "Token expired") {
+			token_expire = true
+			print("Token Expired")
+			return (false, nil, nil)
+		}
+		
 		json_obj = JSON(parseJSON: json_obj["result"]["responseData"].stringValue)
 		let pwr = json_obj["system"]["get_sysinfo"]["relay_state"].boolValue
 		let led = json_obj["system"]["get_sysinfo"]["led_off"].boolValue
@@ -79,6 +173,8 @@ class TPLINK_REMOTE: Plug, Remote {
 	// JSON interface functions
 	
 	func getUpTime() -> (cancelled: Bool, hour: Int?, min: Int?, sec: Int?) {
+		if (token_expire) { return (false, nil, nil, nil) }
+		
 		let result = getSpecificState(match: "on_time")
 
 		// Check Cancelled and State
@@ -93,8 +189,10 @@ class TPLINK_REMOTE: Plug, Remote {
 	}
 	
 	func getSpecificState(match: String) -> (cancelled: Bool, state: String?) {
+		if (token_expire) { return (false, nil) }
+		
 		// Get Plug Info
-		let response = connection.send_string(json: getAPICalls(api: API.INFO))
+		let response = connection!.send_string(json: getAPICalls(api: API.INFO))
 		
 		// Check cancelled
 		if (response.cancelled) { return (true, nil) }
@@ -117,6 +215,7 @@ class TPLINK_REMOTE: Plug, Remote {
 	}
 	
 	func changeRelayState(state: Bool) -> (cancelled: Bool, success: Bool?) {
+		if (token_expire) { return (false, nil) }
 		
 		var req: API
 		if (state) {
@@ -127,7 +226,7 @@ class TPLINK_REMOTE: Plug, Remote {
 		}
 		
 		// Get Plug Info
-		let response = connection.send_string(json: getAPICalls(api: req))
+		let response = connection!.send_string(json: getAPICalls(api: req))
 		
 		// Check cancelled
 		if (response.cancelled) { return (true, nil) }
@@ -149,6 +248,8 @@ class TPLINK_REMOTE: Plug, Remote {
 	
 	// change state of status LED
 	func changeLEDState(state: Bool) -> (cancelled: Bool, success: Bool?) {
+		if (token_expire) { return (false, nil) }
+		
 		var req: API
 		if (state) {
 			req = API.LED_ON
@@ -157,7 +258,7 @@ class TPLINK_REMOTE: Plug, Remote {
 			req = API.LED_OFF
 		}
 		
-		let response = connection.send_string(json: getAPICalls(api: req))
+		let response = connection!.send_string(json: getAPICalls(api: req))
 		
 		// Check cancelled
 		if (response.cancelled) { return (true, nil) }

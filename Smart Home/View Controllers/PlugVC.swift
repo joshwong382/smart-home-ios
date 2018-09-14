@@ -1,5 +1,5 @@
 //
-//  PlugView.swift
+//  PlugVC.swift
 //  Smart Home
 //
 //  Created by Joshua Wong on 11/5/2018.
@@ -10,13 +10,17 @@ import UIKit
 import Reachability
 import SwiftyJSON
 
-var def_ip: String = "192.168.1.201"
-var tplink_token: String = "75e5102d-A7mBwUeGJeO1Kqgopo6mrZ6"
-var tplink_region: String = "https://aps1-wap.tplinkcloud.com"
-var tplink_devid: String = "800657D0D18FB9E97BF5DFAAE62F903818A76421"
-var api: Plug? = nil
-
-class ViewController: UIViewController, UITextFieldDelegate {
+class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresentationControllerDelegate, SmartVC {
+	
+	// Name this ViewController
+	let VCName = "PlugVC"
+	
+	// Variables
+	var def_ip: String = "192.168.1.201"
+	var token: String = "75e5102d-A7mBwUeGJeO1Kqgopo6mrZ6"
+	var tplink_region: String = "https://aps1-wap.tplinkcloud.com"
+	var tplink_devid: String = "800657D0D18FB9E97BF5DFAAE62F903818A76421"
+	var api: Plug? = nil
 	
 	// Connect UI element with code
 	@IBOutlet weak var darkBlueBG: UIImageView!
@@ -28,6 +32,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	@IBOutlet weak var uptime_lbl: UILabel!
 	@IBOutlet weak var url_txt: UITextField!
 	@IBOutlet weak var local_remote_SW: UISegmentedControl!
+	@IBOutlet weak var sidebar: UIButton!
 	
 	// Reachability
 	let reachability = Reachability()!
@@ -41,6 +46,46 @@ class ViewController: UIViewController, UITextFieldDelegate {
 	var on_time: Int = 0
 	var reachability_init = false
 	var updating_common_states = false
+	
+	var token_updating_bool = false
+	var token_updating: Bool {
+		get {
+			return token_updating_bool
+		}
+		set(newVal) {
+			token_updating_bool = newVal
+		}
+	}
+	var new_token: String {
+		get {
+			return ""
+		}
+		set(newVal) {
+			uptime_lbl.textColor = UIColor.black
+			uptime_lbl.text = "Token Updated!"
+			token = newVal
+			updateCommonStates()
+		}
+	}
+	
+	// Bring up the navigation controller
+	@IBAction func sidebar_activated(_ sender: Any) {
+		self.performSegue(withIdentifier: "PopUpSegue", sender: self)
+	}
+
+	// Send data to SidePopVC
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if (segue.destination is SidePopViewController) {
+			let destVC = segue.destination as! SidePopViewController
+			destVC.previousView = VCName
+		}
+		
+		if (segue.destination is LoginViewController) {
+			let destVC = segue.destination as! LoginViewController
+			destVC.smart_api = api
+			destVC.previousVC = segue.source
+		}
+	}
 	
 	override func viewDidLoad() {
 		
@@ -124,7 +169,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 			url_txt.isHidden = true
 			url_txt.isEnabled = false
 			DispatchQueue.global().async {
-				api = TPLINK_REMOTE(_token: tplink_token, _domain: tplink_region, _devid: tplink_devid)
+				self.api = TPLINK_REMOTE(_token: self.token, _domain: self.tplink_region, _devid: self.tplink_devid)
 				
 				DispatchQueue.main.async {
 					self.updateCommonStates()
@@ -158,7 +203,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		DispatchQueue.global().async {
 			var cancelled: Bool
 			var success: Bool?
-			(cancelled, success) = api!.changeRelayState(state: !ui_relay_state!)
+			(cancelled, success) = self.api!.changeRelayState(state: !ui_relay_state!)
 			
 			DispatchQueue.main.async {
 				
@@ -187,7 +232,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 			// Change LED state
 			var cancelled: Bool
 			var success: Bool?
-			(cancelled, success) = api!.changeLEDState(state: is_on)
+			(cancelled, success) = self.api!.changeLEDState(state: is_on)
 			
 			DispatchQueue.main.async {
 				
@@ -276,11 +321,25 @@ class ViewController: UIViewController, UITextFieldDelegate {
 		local_remote_SW.isEnabled = false
 	}
 	
-	func displayError() {
+	func displayError(custom_error: ERRMSG? = nil) {
 		green_light.isHidden = true
 		red_light.isHidden = true
 		
-		if (api == nil) {
+		if (custom_error != nil) {
+			led_sw.isHidden = true
+			led_lbl.isHidden = true
+			uptime_lbl.text = custom_error!.rawValue
+			
+			// Update token!
+			if (custom_error == .token_expired) {
+				token_updating = true
+				DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+					self.performSegue(withIdentifier: "LoginSegue", sender: self)
+				})
+			}
+			
+		}
+		else if (api == nil) {
 			led_sw.isHidden = true
 			led_lbl.isHidden = true
 			uptime_lbl.text = "Error: Invalid Connection!"
@@ -337,18 +396,36 @@ class ViewController: UIViewController, UITextFieldDelegate {
 			return
 		}
 		
+		// Check if token has expired
+		if let remote_api = api as? Remote {
+			if (remote_api.checkExpiry()) {
+				if (token_updating) {
+					return
+				}
+			}
+		}
+		
 		// Real Update
 		updating_common_states = true
 		let serialQueue = DispatchQueue(label: "UPDATE_STATUS")
 		serialQueue.async {
 
 			var cancelled: Bool
-			(cancelled, self.relay_state, self.led_state) = api!.getCommonStates()
+			(cancelled, self.relay_state, self.led_state) = self.api!.getCommonStates()
 			
 			DispatchQueue.main.async {
 
 				// Check if cancelled
 				if (cancelled) { return }
+				
+				// If REMOTE, check token expiry
+				if let api_remote = self.api as? Remote {
+					if (api_remote.checkExpiry()) {
+						self.displayError(custom_error: .token_expired)
+						self.updating_common_states = false
+						return
+					}
+				}
 				
 				// Check connection
 				if (self.relay_state == nil || self.led_state == nil) {
@@ -362,7 +439,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 				
 				// Time
 				var h,m: Int?
-				(valid, h,m,_) = api!.getUpTime()
+				(valid, h,m,_) = self.api!.getUpTime()
 				if (!valid) {
 					self.displayError()
 					self.updating_common_states = false
