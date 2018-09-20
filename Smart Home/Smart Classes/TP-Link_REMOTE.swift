@@ -9,7 +9,76 @@
 import UIKit
 import SwiftyJSON
 
-class TPLINK_REMOTE_LOGIN {
+class TPLINK_PROTO_REMOTE: SMARTDB {
+	
+	required init() {}
+	
+	var type_name: String {
+		get {
+			return "TP-LINK Smart Plug (Remote)"
+		}
+	}
+	
+	var obj_type: SMART.Type {
+		get {
+			return TPLINK_REMOTE.self as SMART.Type
+		}
+	}
+	
+	
+	var obj_login: GET_API {
+		get {
+			return TPLINK_REMOTE_LOGIN()
+		}
+	}
+	
+	func save_to_file(api: SMART, name: String) -> [String: Any] {
+		
+		// If TPLINK is Remote
+		if let aapi = api as? TPLINK_REMOTE {
+			let info = aapi.get_info()
+			let json: [String: Any] = [
+				"type_id": type(of: self).type_id,
+				"name": name,
+				"type": "REMOTE",
+				"info": [
+					"token": info.token,
+					"domain": info.domain,
+					"devid": info.devid
+				]
+			]
+			return json
+		}
+		
+		return [:]
+	}
+	
+	func load_from_file(file: [String: Any]) -> (api: SMART?, name: String?) {
+		
+		if (file["type"] as? String == "REMOTE") {
+			let info = file["info"] as? [String : Any]
+			if (info != nil) {
+				let token = info!["token"] as? String
+				let domain = info!["domain"] as? String
+				let devid = info!["devid"] as? String
+				if (token == nil || domain == nil || devid == nil) {
+					return (nil, nil)
+				}
+				let api = TPLINK_REMOTE(_token: token!, _url: domain!, _devid: devid!)
+				let name = file["name"] as? String
+				if (name == nil) {
+					return (nil, nil)
+				}
+				return (api, name)
+			}
+		}
+		
+		return (nil, nil)
+	}
+	
+}
+
+class TPLINK_REMOTE_LOGIN: TOKEN_MULTIDEVICE, TOKEN_LOGIN {
 	
 	private var token: String = ""
 	private var token_url: String = "https://wap.tplinkcloud.com"
@@ -17,32 +86,56 @@ class TPLINK_REMOTE_LOGIN {
 	
 	init() {}
 	
-	func get_devices(username: String?, password: String) -> (error: Bool, devices: [(api_url: String, device_id: String)]?) {
+	func check_token(token: String) -> (error: Bool, token: String) {
+		self.token = token
+		let result = get_devices()
+		if (result.error) {
+			self.token = ""
+			return (true, "")
+		}
+		return (false, token)
+	}
+	
+	func get_devices() -> (error: Bool, devices: [(api_url: String, device_id: String, alias: String)]?) {
 		
 		if (token == "") {
 			return (true, nil)
 		}
 		
-		let devices_conn = JSON_CONN(url: token_url + "?token=" + token)
+		guard let devices_conn = JSON_CONN(url: token_url + "?token=" + token) else {
+			return (true, nil)
+		}
+		
 		let request: JSON = [
 			"method": "getDeviceList"
 		]
 		
 		let response = devices_conn.send_string(json: request.rawString()!).response
-		if (response == nil) { return (true, nil) }
+		if (response == nil || response == "") { return (true, nil) }
 		
 		var json_obj: JSON = JSON(parseJSON: response!)
 		
 		// Check Error Code
-		if (json_obj["error_code"].intValue != 0) {
-			return (true, nil)
+		if let error_code = json_obj["error_code"].int {
+			if (error_code != 0) {
+				return (true, nil)
+			}
 		}
 		
-		var devices = [(api_url: String, device_id: String)]()
+		var devices = [(api_url: String, device_id: String, alias: String)]()
 		
 		let devicelist = json_obj["result"]["deviceList"].arrayValue
+		
 		for device in devicelist {
-			devices.append((api_url: device["appServerUrl"].stringValue, device_id: device["deviceid"].stringValue))
+			var alias: String
+			
+			// Check if device has alias. If not, use the factory assigned name
+			if (device["alias"].stringValue != "") {
+				alias = device["alias"].stringValue
+			} else {
+				alias = device["deviceName"].stringValue
+			}
+			devices.append((api_url: device["appServerUrl"].stringValue, device_id: device["deviceId"].stringValue, alias: alias))
 		}
 		
 		return (false, devices)
@@ -50,7 +143,10 @@ class TPLINK_REMOTE_LOGIN {
 	
 	func token_from_login(username: String?, password: String) -> (error: Bool, token: String?) {
 		
-		let token_conn = JSON_CONN(url: token_url)
+		guard let token_conn = JSON_CONN(url: token_url) else {
+			return (true, nil)
+		}
+		
 		let request: JSON = [
 			"method": "login",
 			"params": [
@@ -78,12 +174,14 @@ class TPLINK_REMOTE_LOGIN {
 			return (true, nil)
 		}
 		
+		token = potential_token
+		
 		return (false, potential_token)
 	}
 	
 }
 
-class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
+class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDevice, Plug {
 	
 	enum API: String {
 		case ON = "{\\\"system\\\":{\\\"set_relay_state\\\":{\\\"state\\\":1}}}"
@@ -99,12 +197,15 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
 	private var devid: String = ""
 	private var token_expire: Bool = false
 	
-	init(_token: String, _domain: String, _devid: String) {
+	required init?(_token: String, _url: String, _devid: String) {
 		print("Using TP-LINK Remote Plug")
 		token = _token
-		domain = _domain
+		domain = _url
 		devid = _devid
-		connection = JSON_CONN(url: _domain + "/?token=" + _token)
+		guard let connection = JSON_CONN(url: _url + "/?token=" + _token) else {
+			return nil
+		}
+		self.connection = connection
 	}
 	
 	var has_led: Bool {
@@ -120,6 +221,16 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
 		}
 	}
 	
+	var type_id: UInt {
+		get {
+			return TPLINK_PROTO_REMOTE.type_id
+		}
+	}
+	
+	func get_info() -> (token: String, domain: String, devid: String) {
+		return (token, domain, devid)
+	}
+	
 	private func getURL() -> String {
 		return domain + "/?token=" + token
 	}
@@ -132,6 +243,10 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
 		""" + api.rawValue + """
 		\"}}
 		"""
+	}
+	
+	func token_update(token: String) {
+		self.token = token
 	}
 	
 	func checkExpiry() -> Bool {
@@ -156,11 +271,33 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
 		
 		var json_obj: JSON = JSON(parseJSON: response.response!)
 		
-		// Check Token Expiry
-		if (json_obj["msg"].stringValue == "Token expired") {
-			token_expire = true
-			print("Token Expired")
+		if let err_code = json_obj["error_code"].int {
+		
+			// Check Token Expiry
+			if (json_obj["msg"].stringValue == "Token expired") {
+				token_expire = true
+				print("Token Expired")
+				return (false, nil, nil)
+			}
+			
+			// Check Device Offline
+			if (json_obj["msg"].stringValue == "Device is offline") {
+				print("Device Offline")
+				return (false, nil, nil)
+			}
+			
+			// Check Error Code
+			if (json_obj["error_code"].intValue != 0) {
+				print("Unknown Error: " + String(err_code))
+				return (false, nil, nil)
+			}
+			
+		} else {
+			
+			// TP-LINK API Error
+			print("TP-LINK API ERROR")
 			return (false, nil, nil)
+			
 		}
 		
 		json_obj = JSON(parseJSON: json_obj["result"]["responseData"].stringValue)
@@ -168,6 +305,12 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Plug, Remote {
 		let led = json_obj["system"]["get_sysinfo"]["led_off"].boolValue
 		
 		return (false, pwr, led)
+	}
+	
+	// Stub to getCommonStates()
+	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
+		let result = getCommonStates()
+		return (result.cancelled, result.pwr)
 	}
 	
 	// JSON interface functions

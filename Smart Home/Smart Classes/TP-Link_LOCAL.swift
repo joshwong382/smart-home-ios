@@ -9,25 +9,125 @@
 import UIKit
 import SwiftyJSON
 
+class TPLINK_PROTO_LOCAL: SMARTDB {
+	
+	required init() {}
+	
+	var type_name: String {
+		get {
+			return "TP-LINK Smart Plug (Local)"
+		}
+	}
+	
+	var obj_type: SMART.Type {
+		get {
+			return TPLINK_LOCAL.self as SMART.Type
+		}
+	}
+	
+	var obj_login: GET_API {
+		get {
+			return TPLINK_LOCAL_LOGIN()
+		}
+	}
+	
+	func save_to_file(api: SMART, name: String) -> [String: Any] {
+		// Local
+		if let aapi = api as? TPLINK_LOCAL {
+			let ip = aapi.connection.returnIP()!
+			let port = aapi.connection.returnPort()!
+			let json: [String: Any] = [
+				"type_id": type(of: self).type_id,
+				"name": name,
+				"type": "LOCAL",
+				"info": [
+					"ip": ip,
+					"port": String(port)
+				]
+			]
+			return json
+		}
+		return [:]
+	}
+	
+	func load_from_file(file: [String : Any]) -> (api: SMART?, name: String?) {
+		
+		if (file["type"] as? String == "LOCAL") {
+			if let info = file["info"] as? [String: String] {
+				let ip = info["ip"]
+				let port = info["port"]
+				if (ip == nil || port == nil) {
+					return (nil, nil)
+				}
+				let api = TPLINK_LOCAL(ip: ip! + ":" + port!)
+				let name = file["name"] as? String
+				if (name == nil) {
+					return (nil, nil)
+				}
+				return (api, name)
+			}
+		}
+		return (nil, nil)
+	}
+}
+
+class TPLINK_LOCAL_LOGIN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
+	
+	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
+		fieldsRequirementLevel = 1
+		firstField.placeholder = "IP(:PORT) or URL"
+		secondField.isHidden = true
+	}
+	
+	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, new_api: SMART?, name: String?) {
+		if (firstText == nil) {
+			return (true, nil, nil)
+		}
+		let api = TPLINK_LOCAL(ip: firstText!)
+		if (api == nil) {
+			return (true, nil, nil)
+		}
+		
+		var i = 0
+		var name: String? = nil
+		while (true) {
+			let result = api!.getSpecificState(match: "alias")
+			if (result.cancelled == false) {
+				name = result.state
+				break
+			}
+			if (i >= 5) {
+				name = nil
+				break
+			}
+			i += 1
+		}
+		return (false, api, name)
+	}
+	
+}
+
 class TPLINK_LOCAL: Plug, Local {
 	
 	var connection: IP_CONN
 	
-	init(ip: String) {
+	init?(ip: String) {
 		connection = IP_CONN(string: ip)
 		if (connection.isValid()) {
 			print("Using TP-LINK Local Plug")
 		} else {
 			print("Connection Error")
+			return nil
 		}
 	}
 	
-	init(conn: IP_CONN) {
+	init?(conn: IP_CONN) {
 		connection = conn
 		if (connection.isValid()) {
 			print("Using TP-LINK Local Plug")
 		} else {
 			print("Connection Error")
+			return nil
 		}
 	}
 
@@ -44,14 +144,19 @@ class TPLINK_LOCAL: Plug, Local {
 		}
 	}
 	
+	var type_id: UInt {
+		get {
+			return TPLINK_PROTO_LOCAL.type_id
+		}
+	}
+	
 	/*-----------------------------------------------
 	/
 	/	STATES UPDATE
 	/
 	/ ---------------------------------------------*/
 	
-	// get state of power and status LED
-	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
+	private func getAllStates() -> (cancelled: Bool, json_str: String?) {
 		
 		// Get Plug Info
 		let info_req = "{\"system\":{\"get_sysinfo\":null}}"
@@ -60,23 +165,48 @@ class TPLINK_LOCAL: Plug, Local {
 		(cancelled, request) = connection.send_data(data: encrypt_req(data: info_req))
 		
 		// Check Cancelled
-		if (cancelled) { return (true, nil, nil) }
+		if (cancelled) { return (true, nil) }
 		
 		// Check Request
-		if (request == nil) { return (false, nil, nil) }
+		if (request == nil) { return (false, nil) }
 		
 		// Check connection
-		if (!connection.ableConnect()) { return (false, nil, nil) }
+		if (!connection.ableConnect()) { return (false, nil) }
 		
 		let response = decrypt_req(data: request!)
 		
+		if (response.count == 0) { return (false, nil) }
+		
 		var json = response.trimmingCharacters(in: .whitespacesAndNewlines)
 		json = String(response.dropFirst(3))
+		
 		json = "{" + json
-		//print(json)
+		
+		if (debug_contains(type: .TCP)) {
+			print("/*************")
+			print(response)
+			print("*************/")
+		}
+		
+		return (false, json)
+	}
+	
+	// get state of power and status LED
+	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
+		
+		let result = getAllStates()
+		
+		// Check Cancelled
+		if (result.cancelled) { return (true, nil, nil) }
+		
+		// Check Request
+		if (result.json_str == nil) { return (false, nil, nil) }
 		
 		// Check Relay State
-		let json_obj: JSON = JSON(parseJSON: json)
+		let json_obj: JSON = JSON(parseJSON: result.json_str!)
+		
+		if (json_obj["system"]["get_sysinfo"]["relay_state"].stringValue == "") { return (false, nil, nil) }
+		
 		let pwr = json_obj["system"]["get_sysinfo"]["relay_state"].boolValue
 		let led = json_obj["system"]["get_sysinfo"]["led_off"].boolValue
 		
@@ -94,6 +224,12 @@ class TPLINK_LOCAL: Plug, Local {
 		}*/
 		
 		return (false, pwr, led)
+	}
+	
+	// A Stub to Get Common States to satisfy protocol
+	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
+		let result = getCommonStates()
+		return (result.cancelled, result.pwr)
 	}
 	
 	// JSON interface functions
@@ -115,29 +251,17 @@ class TPLINK_LOCAL: Plug, Local {
 	}
 
 	func getSpecificState(match: String) -> (cancelled: Bool, state: String?) {
-		// Get Plug Info
-		let info_req = "{\"system\":{\"get_sysinfo\":null}}"
-		var cancelled: Bool
-		var request: [UInt8]?
-		(cancelled, request) = connection.send_data(data: encrypt_req(data: info_req))
+		
+		let result = getAllStates()
 		
 		// Check Cancelled
-		if (cancelled) { return (true, nil) }
+		if (result.cancelled) { return (true, nil) }
 		
 		// Check Request
-		if (request == nil) { return (false, nil) }
-		
-		// Check connection
-		if (!connection.ableConnect()) { return (false, nil) }
-		
-		let response = decrypt_req(data: request!)
-		
-		var json = response.trimmingCharacters(in: .whitespacesAndNewlines)
-		json = String(response.dropFirst(3))
-		json = "{" + json
+		if (result.json_str == nil) { return (false, nil) }
 		
 		// Check Relay State
-		let json_obj: JSON = JSON(parseJSON: json)
+		let json_obj: JSON = JSON(parseJSON: result.json_str!)
 		let relay = json_obj["system"]["get_sysinfo"][match].stringValue
 		
 		return (false, relay)
@@ -225,8 +349,7 @@ class TPLINK_LOCAL: Plug, Local {
 	func encrypt_req(data: String) -> [UInt8] {
 		let data_char = Array(data)
 		var key: UInt32 = 171
-		var result = [UInt8]()
-		result += [0,0,0,0]
+		var result = [UInt8](pack(">I", [data.count]))
 		for i: Character in data_char {
 			let a = key ^ (i.ascii)!
 			key = a

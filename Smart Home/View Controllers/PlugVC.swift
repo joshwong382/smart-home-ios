@@ -7,19 +7,16 @@
 //
 
 import UIKit
-import Reachability
 import SwiftyJSON
+import Reachability
 
-class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresentationControllerDelegate, SmartVC {
-	
-	// Name this ViewController
-	let VCName = "PlugVC"
+class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopoverPresentationControllerDelegate, SmartVC {
 	
 	// Variables
-	var def_ip: String = "192.168.1.201"
-	var token: String = "75e5102d-A7mBwUeGJeO1Kqgopo6mrZ6"
-	var tplink_region: String = "https://aps1-wap.tplinkcloud.com"
-	var tplink_devid: String = "800657D0D18FB9E97BF5DFAAE62F903818A76421"
+	//var def_ip: String = "192.168.1.201"
+	//var token: String = "75e5102d-A7mBwUeGJeO1Kqgopo6mrZ6"
+	//var tplink_region: String = "https://aps1-wap.tplinkcloud.com"
+	//var tplink_devid: String = "800657D0D18FB9E97BF5DFAAE62F903818A76421"
 	var api: Plug? = nil
 	
 	// Connect UI element with code
@@ -34,9 +31,6 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 	@IBOutlet weak var local_remote_SW: UISegmentedControl!
 	@IBOutlet weak var sidebar: UIButton!
 	
-	// Reachability
-	let reachability = Reachability()!
-	
 	var prev_connected = false
 	var connected = false
 	
@@ -44,7 +38,6 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 	var led_state: Bool? = nil
 	var start_time: UInt64 = 0
 	var on_time: Int = 0
-	var reachability_init = false
 	var updating_common_states = false
 	
 	var token_updating_bool = false
@@ -61,24 +54,22 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 			return ""
 		}
 		set(newVal) {
-			uptime_lbl.textColor = UIColor.black
-			uptime_lbl.text = "Token Updated!"
-			token = newVal
-			updateCommonStates()
+			if let api_remote = api as? Remote_TokenHasExpiry {
+				uptime_lbl.textColor = .black
+				uptime_lbl.text = "Token Updated!"
+				api_remote.token_update(token: newVal)
+				updateCommonStates()
+			}
 		}
 	}
 	
 	// Bring up the navigation controller
 	@IBAction func sidebar_activated(_ sender: Any) {
-		self.performSegue(withIdentifier: "PopUpSegue", sender: self)
+		self.dismiss(animated: true, completion: nil)
 	}
 
-	// Send data to SidePopVC
+	// Send data to Segue Destinations
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if (segue.destination is SidePopViewController) {
-			let destVC = segue.destination as! SidePopViewController
-			destVC.previousView = VCName
-		}
 		
 		if (segue.destination is LoginViewController) {
 			let destVC = segue.destination as! LoginViewController
@@ -87,14 +78,25 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		}
 	}
 	
+	override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+		super.dismiss(animated: flag, completion: completion)
+	}
+	
 	override func viewDidLoad() {
 		
 		super.viewDidLoad()
-		displayWait(begin: true)
+		
+		// Display Startup Logo
+		//displayWait(begin: true)
+		
+		displayWait()
 		
 		// test networking
 		setenv("CFNETWORK_DIAGNOSTICS", "0", 1)
 		var override_remote = false
+		
+		// Create Reachability Delegate!
+		
 		
 		 /*-----------------------------------------------
 		 /
@@ -120,8 +122,6 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		red_light.isHidden = true
 		darkBlueBG.isHidden = false
 		//url_txt.text = conn_ip + ":" + conn_port
-		
-		startMonitoring()
 	}
 	
 	// Override screen touch
@@ -138,45 +138,26 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 	
 	// Creates a new connection (override: overrides to remote connection)
 	func local_remote_switched_main(override: Bool = false, init_startup: Bool = false) {
-
-		var local_ip: String? = nil
-		let selected_index = local_remote_SW.selectedSegmentIndex
-		if (selected_index == 0 && !override) {
-			url_txt.isHidden = false
-			url_txt.isEnabled = true
+		
+		if (api is Remote) {
 			
-			// IP is get from update_connection_text
-			local_ip = update_connection_text()
-			
-			// Check IP Validity
-			if (local_ip == nil) {
-				api = nil
-				displayError()
-				return
-			}
-			
-			// Check if previous API is NULL and display WAIT
-			if (api == nil && init_startup == false) {
-				displayWait()
-			}
-			
-			api = TPLINK_LOCAL(ip: local_ip!)
-			
-			updateCommonStates()
-			prev_connected = connected
-		}
-		else {
+			local_remote_SW.selectedSegmentIndex = 1
 			url_txt.isHidden = true
 			url_txt.isEnabled = false
-			DispatchQueue.global().async {
-				self.api = TPLINK_REMOTE(_token: self.token, _domain: self.tplink_region, _devid: self.tplink_devid)
-				
-				DispatchQueue.main.async {
-					self.updateCommonStates()
-					self.prev_connected = self.connected
-				}
-			}
+			
+		} else if let local_api = api as? Local {
+			
+			local_remote_SW.selectedSegmentIndex = 0
+			url_txt.isHidden = false
+			url_txt.isEnabled = false
+			url_txt.text = local_api.connection.returnIP()! + ":" + String(local_api.connection.returnPort()!)
+			
+		} else {
+			local_remote_SW.isHidden = true
 		}
+		
+		local_remote_SW.isEnabled = false
+		self.updateCommonStates()
 
 	}
 	
@@ -261,7 +242,7 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 	/ ---------------------------------------------*/
 	
 	@IBAction func urltxt_editing_start(_ sender: Any) {
-		url_txt.textColor = UIColor.black
+		url_txt.textColor = .black
 		if (url_txt.text == "Invalid IP or port") {
 			url_txt.text = ""
 		}
@@ -276,31 +257,6 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		return true
 	}
 	
-	func check_urltext_valid() -> IP_CONN {
-		
-		var connection: IP_CONN
-		// Check valid URL
-		if (url_txt.text == nil) {
-			connection = IP_CONN(string: def_ip)
-		} else {
-			connection = IP_CONN(string: url_txt.text!)
-		}
-		return connection
-	}
-	
-	func update_connection_text() -> String? {
-		let connection = check_urltext_valid()
-		
-		if (connection.isValid()) {
-			url_txt.text = connection.returnIP()! + ":" + String(connection.returnPort()!)
-		} else {
-			url_txt.textColor = UIColor.red
-			url_txt.text = "Invalid IP or port"
-		}
-		
-		return connection.returnIP()
-	}
-	
 	// UI display modules
 	
 	func displayWait(begin: Bool = false) {
@@ -311,14 +267,14 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		led_lbl.isHidden = true
 		
 		powerButton.isEnabled = false
-		uptime_lbl.textColor = UIColor.white
+		uptime_lbl.textColor = .white
 		if (!begin) {
 			uptime_lbl.text = "Please Wait..."
 		} else {
 			uptime_lbl.text = "Smart Home\nBy Joshua Wong"
 		}
 		
-		local_remote_SW.isEnabled = false
+		//local_remote_SW.isEnabled = false
 	}
 	
 	func displayError(custom_error: ERRMSG? = nil) {
@@ -355,7 +311,7 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		prev_connected = connected
 		connected = false
 		
-		local_remote_SW.isEnabled = true
+		//local_remote_SW.isEnabled = true
 	}
 	
 	func displayNormal() {
@@ -373,7 +329,7 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		prev_connected = connected
 		connected = true
 		
-		local_remote_SW.isEnabled = true
+		//local_remote_SW.isEnabled = true
 	}
 
 	/*-----------------------------------------------
@@ -397,7 +353,7 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 		}
 		
 		// Check if token has expired
-		if let remote_api = api as? Remote {
+		if let remote_api = api as? Remote_TokenHasExpiry {
 			if (remote_api.checkExpiry()) {
 				if (token_updating) {
 					return
@@ -419,7 +375,7 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 				if (cancelled) { return }
 				
 				// If REMOTE, check token expiry
-				if let api_remote = self.api as? Remote {
+				if let api_remote = self.api as? Remote_TokenHasExpiry {
 					if (api_remote.checkExpiry()) {
 						self.displayError(custom_error: .token_expired)
 						self.updating_common_states = false
@@ -434,13 +390,13 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 					return
 				}
 				
-				var valid = true
+				var cancelled: Bool
 				self.displayNormal()
 				
 				// Time
 				var h,m: Int?
-				(valid, h,m,_) = self.api!.getUpTime()
-				if (!valid) {
+				(cancelled, h,m,_) = self.api!.getUpTime()
+				if (cancelled) {
 					self.displayError()
 					self.updating_common_states = false
 					return
@@ -454,36 +410,11 @@ class PlugViewController: UIViewController, UITextFieldDelegate, UIPopoverPresen
 			}
 		}
 	}
-
-	// Network Reachability Functions
 	
-	@objc func reachabilityChanged(notification: Notification) {
-		if (!reachability_init) { reachability_init = true }
-		else {
-			let reachability = notification.object as! Reachability
-			switch reachability.connection {
-			case .none:
-				//debugPrint("Network became unreachable")
-				displayError()
-			case .wifi:
-				print("On WiFi")
-				updateCommonStates()
-			case .cellular:
-				print("On Cellular")
-				updateCommonStates()
-			}
-		}
-	}
-	
-	func startMonitoring() {
-		NotificationCenter.default.addObserver(self,
-											   selector: #selector(self.reachabilityChanged),
-											   name: Notification.Name.reachabilityChanged,
-											   object: reachability)
-		do{
-			try reachability.startNotifier()
-		} catch {
-			debugPrint("Could not start reachability notifier")
+	override func reachabilityChanged(state: Reachability.Connection) {
+		super.reachabilityChanged(state: state)
+		if (state == .none) {
+			displayError()
 		}
 	}
 }

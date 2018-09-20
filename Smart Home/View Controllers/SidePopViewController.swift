@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SidePopViewController: UIViewContLR {
+class SidePopViewController: UIViewContL {
 	
 	var previousView: String? = nil
 

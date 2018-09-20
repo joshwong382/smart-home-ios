@@ -30,10 +30,12 @@ class JSON_CONN: Connection {
 		valid = true
 	}
 	
-	init(url: String) {
+	init?(url: String) {
 		if (isValidURL(url: url)) {
 			conn_url = URL(string: url)
 			valid = true
+		} else {
+			return nil
 		}
 	}
 	
@@ -53,6 +55,10 @@ class JSON_CONN: Connection {
 		if (json == nil) { return false }
 		let jsonData = json?.data(using: String.Encoding.utf8)
 		return JSONSerialization.isValidJSONObject(jsonData!)
+	}
+	
+	func getURL() -> URL {
+		return conn_url!
 	}
 	
 	func JSONtoString(json: Any, prettyPrinted: Bool = false) -> String {
@@ -162,9 +168,14 @@ class JSON_CONN: Connection {
 		while (!success && DispatchTime.now().uptimeNanoseconds - current_time < UInt64(timeout*1e9)) {
 			
 			// Check for terminate
-			if (task.progress.isCancelled) {
-				print("Task Terminated by Newer Task!")
-				return (true, nil)
+			if #available(iOS 11.0, *) {
+				if (task.progress.isCancelled) {
+					print("Task Terminated by Newer Task!")
+					return (true, nil)
+				}
+			} else {
+				// Fallback on earlier versions
+				// Just wait the full 5 seconds
 			}
 			
 		}

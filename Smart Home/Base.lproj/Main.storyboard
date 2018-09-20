@@ -1,18 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="KaV-dd-58o">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14252.5"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Devices-->
+        <scene sceneID="MMH-N9-91o">
+            <objects>
+                <tableViewController id="AQV-XM-zgF" customClass="UIViewWelcome" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="LSs-Dv-ZrP">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="OIu-Gm-PZM" customClass="taggedTVCell">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="2" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="OIu-Gm-PZM" id="YsV-d6-PXM">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="AQV-XM-zgF" id="vwW-J0-Ix9"/>
+                            <outlet property="delegate" destination="AQV-XM-zgF" id="dMU-hG-RPr"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Devices" id="0yq-B6-JMy"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="popoverPresentation" identifier="Table2PlugSegue" popoverAnchorView="LSs-Dv-ZrP" id="b9q-Ph-fRG">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                            <popoverPassthroughViews>
+                                <tableView reference="LSs-Dv-ZrP"/>
+                            </popoverPassthroughViews>
+                        </segue>
+                        <segue destination="Obt-kv-aIb" kind="show" identifier="Table2DeviceSegue" id="QGK-OW-NKT"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sgU-m6-LKf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-550" y="90"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="S89-Ob-T03">
+            <objects>
+                <navigationController id="KaV-dd-58o" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SZm-jc-Bm6">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="AQV-XM-zgF" kind="relationship" relationship="rootViewController" id="e6e-9E-UiL"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="76L-p1-VCE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1420" y="90"/>
+        </scene>
+        <!--Plug View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="PlugViewController" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -77,8 +131,16 @@
                                     <action selector="local_Remote_Switched:" destination="BYZ-38-t0r" eventType="valueChanged" id="Fz6-Wp-ACy"/>
                                 </connections>
                             </segmentedControl>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="192.168.1.201:9999" borderStyle="roundedRect" placeholder="URL[:port]" textAlignment="center" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Q0T-YL-YV7">
-                                <rect key="frame" x="101" y="65" width="201" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KtX-gn-DI3">
+                                <rect key="frame" x="16" y="28" width="24" height="28"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="menu"/>
+                                <connections>
+                                    <action selector="sidebar_activated:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0T1-ul-Omm"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="192.168.1.201:9999" borderStyle="roundedRect" placeholder="URL[:port]" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Q0T-YL-YV7">
+                                <rect key="frame" x="87" y="64" width="201" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -87,10 +149,6 @@
                                     <action selector="urltxt_editing_start:" destination="BYZ-38-t0r" eventType="editingDidBegin" id="ARa-T9-O2p"/>
                                 </connections>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="menu" translatesAutoresizingMaskIntoConstraints="NO" id="dOx-DN-ycG">
-                                <rect key="frame" x="16" y="28" width="24" height="28"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -112,10 +170,11 @@
                         <outlet property="local_remote_SW" destination="992-dc-gjz" id="D6s-nA-a4r"/>
                         <outlet property="powerButton" destination="wSm-Nq-mLV" id="3ha-Sm-Fxv"/>
                         <outlet property="red_light" destination="aFg-UJ-joc" id="Eg1-Zm-2Jo"/>
+                        <outlet property="sidebar" destination="KtX-gn-DI3" id="cWr-ic-504"/>
                         <outlet property="uptime_lbl" destination="ZRB-ds-vM8" id="VLP-jd-bU2"/>
                         <outlet property="url_txt" destination="Q0T-YL-YV7" id="Qv6-3Z-lKX"/>
-                        <segue destination="qKf-q5-W7k" kind="popoverPresentation" identifier="PopUpSegue" customClass="PopUpSegue" customModule="Smart_Home" customModuleProvider="target" popoverAnchorView="dOx-DN-ycG" id="uve-sf-9Ro">
-                            <popoverArrowDirection key="popoverArrowDirection" left="YES"/>
+                        <segue destination="RQI-OV-SP9" kind="popoverPresentation" identifier="LoginSegue" popoverAnchorView="jQL-A2-JDq" id="Jab-U3-xNY">
+                            <popoverArrowDirection key="popoverArrowDirection" down="YES"/>
                             <popoverPassthroughViews>
                                 <imageView reference="jQL-A2-JDq"/>
                             </popoverPassthroughViews>
@@ -126,23 +185,148 @@
             </objects>
             <point key="canvasLocation" x="365.60000000000002" y="91.304347826086968"/>
         </scene>
-        <!--Side Pop View Controller-->
-        <scene sceneID="iEY-2h-qon">
+        <!--Select Device Type-->
+        <scene sceneID="66T-pW-ahK">
             <objects>
-                <viewController id="qKf-q5-W7k" customClass="SidePopViewController" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="yDx-0v-XPK" customClass="DevicesVC" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="PsE-wL-oFq"/>
-                        <viewControllerLayoutGuide type="bottom" id="IRt-3Q-Sbe"/>
+                        <viewControllerLayoutGuide type="top" id="v73-4i-VaX"/>
+                        <viewControllerLayoutGuide type="bottom" id="JQA-lX-wn4"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="QJ1-8l-6PT">
+                    <view key="view" contentMode="scaleToFill" id="mfe-ni-BVU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yBc-8x-XOt">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="X7K-hT-wMW">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="75" id="zid-8J-cIU">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="75"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zid-8J-cIU" id="fuD-6q-wIP">
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="74.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="yDx-0v-XPK" id="QhS-6Y-YKy"/>
+                                    <outlet property="delegate" destination="yDx-0v-XPK" id="QeI-4W-7cT"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Select Device Type" id="emM-iw-i76"/>
+                    <connections>
+                        <outlet property="table" destination="X7K-hT-wMW" id="UDg-gl-7Re"/>
+                        <segue destination="RQI-OV-SP9" kind="show" identifier="Device2LoginSegue" id="PfF-Pt-ThZ"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="45O-69-4oR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lgf-n4-YMt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1134" y="91"/>
+            <point key="canvasLocation" x="-551.20000000000005" y="1030.4347826086957"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="0Nd-c3-VZJ">
+            <objects>
+                <viewController id="RQI-OV-SP9" customClass="LoginViewController" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="iPe-lH-fBJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="hBl-DV-Ffr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UU6-fE-vKB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="57s-NA-X5A">
+                                <rect key="frame" x="16" y="28" width="48" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="cancel_pressed:" destination="RQI-OV-SP9" eventType="touchUpInside" id="ndt-Zg-SGJ"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Smart Home" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mFW-xD-4EW">
+                                <rect key="frame" x="0.0" y="101" width="375" height="35"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username/Email or Token" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jGy-5m-3UC">
+                                <rect key="frame" x="34" y="183" width="307" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="username_editchanged:" destination="RQI-OV-SP9" eventType="editingChanged" id="Nyj-cV-B37"/>
+                                </connections>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password (Leave blank for Token)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="o7a-si-ORK">
+                                <rect key="frame" x="34" y="242" width="307" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
+                                <connections>
+                                    <action selector="pass_editchanged:" destination="RQI-OV-SP9" eventType="editingChanged" id="lIy-dD-307"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Vr-Mf-4Dz">
+                                <rect key="frame" x="157" y="312" width="60" height="42"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Login"/>
+                                <connections>
+                                    <action selector="login_pressed:" destination="RQI-OV-SP9" eventType="touchUpInside" id="1vP-gB-er6"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="375" translatesAutoresizingMaskIntoConstraints="NO" id="fYn-3v-8g0">
+                                <rect key="frame" x="0.0" y="362" width="375" height="48"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="1" green="0.046545039429999997" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <connections>
+                        <outlet property="cancel_btn" destination="57s-NA-X5A" id="Chi-wg-eEn"/>
+                        <outlet property="error_lbl" destination="fYn-3v-8g0" id="Fve-Hd-ynT"/>
+                        <outlet property="login_btn" destination="5Vr-Mf-4Dz" id="qc6-r6-4i8"/>
+                        <outlet property="login_lbl" destination="mFW-xD-4EW" id="hfl-2e-nZH"/>
+                        <outlet property="pass_field" destination="o7a-si-ORK" id="JR5-07-l7Z"/>
+                        <outlet property="username_field" destination="jGy-5m-3UC" id="r7R-Nn-3as"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ifS-5F-RLL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="366" y="1032"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="7Ye-Bo-CBd">
+            <objects>
+                <navigationController id="Obt-kv-aIb" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FnT-rK-eQv">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="yDx-0v-XPK" kind="relationship" relationship="rootViewController" id="t23-qQ-FJL"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zcg-YH-mYX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1420" y="1031"/>
         </scene>
     </scenes>
     <resources>
@@ -152,4 +336,7 @@
         <image name="menu" width="22" height="22"/>
         <image name="powerButton" width="96" height="96"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="PfF-Pt-ThZ"/>
+    </inferredMetricsTieBreakers>
 </document>
