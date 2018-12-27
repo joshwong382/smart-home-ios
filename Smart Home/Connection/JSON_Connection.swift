@@ -11,8 +11,9 @@ import SwiftyJSON
 
 class JSON_CONN: Connection {
 	
-	internal var timeout: Double {
-		return 5 // Timeout 5 seconds
+	static var _timeout: Double = 3
+	var timeout: Double {
+		return JSON_CONN._timeout
 	}
 	
 	private var conn_url: URL?
@@ -89,17 +90,63 @@ class JSON_CONN: Connection {
 	/
 	/ ---------------------------------------------*/
 	
-	func testPOST() -> (cancelled: Bool, response: String?) {
-		let jsonObject: [String: Any]  = [
-			"test": "SUCCESS"
-		]
-		
-		return POST(url_override: URL(string: "https://ca.josh-wong.net/public/testpost.php"), json: JSONtoString(json: jsonObject))
-	}
-	
 	// Public Send Function
 	func send_string(json: String) -> (cancelled: Bool, response: String?) {
 		return POST(json: json)
+	}
+	
+	static func do_GET(url: URL) -> String? {
+		return do_HTTP(url: url, type: "GET", post_contents: "")
+	}
+	
+	static func do_POST(url: URL, post_contents: String) -> String? {
+		return do_HTTP(url: url, type: "POST", post_contents: post_contents)
+	}
+	
+	// Static Send Function
+	static func do_HTTP(url: URL, type: String, post_contents: String) -> String? {
+		
+		let session = URLSession.shared
+		var request = URLRequest(url: url)
+		
+		request.httpMethod = type
+		request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
+		
+		if (type == "POST") {
+			request.httpBody = post_contents.data(using: String.Encoding.utf8)
+			request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		}
+		
+		var dataString: String? = nil
+		var success = false
+		
+		let task = session.dataTask(with: request as URLRequest) {
+			(data, response, error) in
+			
+			guard let data = data, let _:URLResponse = response, error == nil else {
+				print("error")
+				return
+			}
+			
+			dataString =  String(data: data, encoding: String.Encoding.utf8)
+			success = true
+		}
+		
+		let current_time = DispatchTime.now().uptimeNanoseconds
+		task.resume()
+		
+		// Wait til task comes back or timeout in 5 seconds
+		while (!success && DispatchTime.now().uptimeNanoseconds - current_time < UInt64(_timeout*1e9)) {}
+		
+		if (debug_contains(type: .JSON)) {
+			print("URL: " + url.absoluteString)
+			print("/*******************************")
+			print(dataString ?? "RESPONSE NIL")
+			print("*******************************/")
+			print("\n\n")
+		}
+		
+		return (dataString)
 	}
 	
 	// Private Send Function with URL override

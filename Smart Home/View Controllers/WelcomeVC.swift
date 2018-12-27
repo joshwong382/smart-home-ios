@@ -15,8 +15,8 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// Refresh Button
-		let edit_btn = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.edit, target: self, action: #selector(edit(_:)))
+		// Edit Button
+		let edit_btn = UIBarButtonItem(title: "Edit", style: UIBarButtonItem.Style.plain, target: self, action: #selector(edit(_:)))
 		navigationItem.leftBarButtonItem = edit_btn
 		
 		// Add Button
@@ -102,7 +102,7 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		cell!.textLabel?.lineBreakMode = .byTruncatingTail
 		
 		// Check Current State for Plug
-		if (info.api is Plug) {
+		if (info.api is Plug || info.api is Switch) {
 			
 			// Create on-off switch
 			var on_off_sw: UISwitch? = nil
@@ -145,7 +145,7 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 			}
 		}
 		
-		// No need to check state for switch
+		// No need to check state for trigger
 		else if (info.api is Trigger) {
 			
 			let btn = UIButton(type: .system)
@@ -199,11 +199,19 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		}
 	}
 	
+	// When user moves elements around
+	override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+	}
+	
 	@objc func toggle(_ sender: UISwitch) {
 		let api = api_data.get(index: sender.tag).api
 		
 		if let PlugAPI = api as? Plug {
 			_ = PlugAPI.changeRelayState(state: sender.isOn)
+		}
+		
+		if let SwitchAPI = api as? Switch {
+			_ = SwitchAPI.changeRelayState(state: sender.isOn)
 		}
 	}
 	
@@ -217,8 +225,17 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	
 	// Refreshes the page for reconenctions
 	@objc func edit(_ sender: UIBarButtonItem) {
-		reloadData()
+		
+		if(self.tableView.isEditing) {
+			self.tableView.isEditing = false
+			self.navigationItem.leftBarButtonItem?.title = "Edit"
+		} else {
+			self.tableView.isEditing = true
+			self.navigationItem.leftBarButtonItem?.title = "Done"
+		}
+		
 	}
+	
 	
 	// Creates a new object on the page
 	@objc func create_smartobj(_ sender: UIBarButtonItem) {
@@ -245,6 +262,11 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	func checkRelayState(api: SMART) -> Bool? {
 		if let PlugAPI = api as? Plug {
 			let result = PlugAPI.getCommonStates()
+			return result.pwr
+		}
+		
+		if let SwitchAPI = api as? Switch {
+			let result = SwitchAPI.getPowerState()
 			return result.pwr
 		}
 		return nil

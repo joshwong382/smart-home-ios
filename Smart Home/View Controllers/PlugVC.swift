@@ -173,11 +173,13 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 		
 		// We don't want any accidental state change
 		let ui_relay_state = relay_state
-		updateCommonStates()
 		
 		if (ui_relay_state == nil) {
 			if (relay_state == nil) { displayError() }
-			else { return }
+			else {
+				powerButton.isEnabled = true
+				return
+			}
 		}
 		
 		// If update state just changed back online don't do anything
@@ -195,8 +197,16 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 				if (self.connected && self.prev_connected) {
 					if (success == nil) {
 						self.displayError()
+						return
 					}
 				}
+				
+				if (success == true) {
+					self.relay_state = !ui_relay_state!
+					self.displayNormal()
+					
+				}
+				self.powerButton.isEnabled = true
 				self.updateCommonStates()
 			}
 		}
@@ -396,11 +406,19 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 				// Time
 				var h,m: Int?
 				(cancelled, h,m,_) = self.api!.getUpTime()
+				
 				if (cancelled) {
 					self.displayError()
 					self.updating_common_states = false
 					return
 				}
+				
+				if (h == nil || m == nil) {
+					self.updating_common_states = false
+					self.uptime_lbl.text = self.api!.name;
+					return
+				}
+				
 				let hS = twoDigitInt(int: h!)
 				let mS = twoDigitInt(int: m!)
 				self.uptime_lbl.text = "Uptime: \(hS)h \(mS)m"

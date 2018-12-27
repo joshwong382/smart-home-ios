@@ -12,8 +12,15 @@ class IP_CONN: Connection {
 	
 	let default_port = 9999
 	
-	internal var timeout: Double {
-		return 5
+	private var _timeout: Double = 3
+	var timeout: Double {
+		get {
+			return _timeout
+		}
+		
+		set(__timeout) {
+			_timeout = __timeout
+		}
 	}
 	
 	private var conn_ip: String?

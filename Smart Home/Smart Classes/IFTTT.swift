@@ -57,6 +57,9 @@ class IFTTT_PROTO: SMARTDB {
 			if (name == nil) {
 				return (nil, nil)
 			}
+			if (api != nil) {
+				api!.name = name
+			}
 			return (api, name)
 		}
 		return (nil, nil)
@@ -138,6 +141,17 @@ class IFTTT: IFTTT_GETTOKEN, Trigger, Remote_SingleDevice {
 	
 	var vendor_name: String {
 		return "IFTTT"
+	}
+	
+	private var privname: String? = nil;
+	var name: String? {
+		get {
+			return privname;
+		}
+		
+		set(_name) {
+			privname = _name;
+		}
 	}
 	
 	var type_id: UInt {

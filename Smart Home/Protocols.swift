@@ -9,17 +9,17 @@
 import UIKit
 import SwiftyJSON
 
-let debug: [DEBUG_STR] = [.JSON]
-
-// to use debug
-// if (debug_contains(type: .JSON)) {}
-
 enum DEBUG_STR {
 	case JSON
 	case TCP
 	case UIViewWelcome
 	case TokenUpdate
 }
+
+let debug: [DEBUG_STR] = []
+
+// to use debug
+// if (debug_contains(type: .JSON)) {}
 
 func debug_contains(type: DEBUG_STR) -> Bool {
 	for types in debug {
@@ -99,6 +99,7 @@ class proto_db {
 		protos.append((db: TPLINK_PROTO_LOCAL() as SMARTDB, typeid: 0))
 		protos.append((db: TPLINK_PROTO_REMOTE() as SMARTDB, typeid: 1))
 		protos.append((db: WEB_GPIO_PROTO() as SMARTDB, typeid: 3))
+		protos.append((db: WEB_GET_PROTO() as SMARTDB, typeid: 4))
 	}
 	
 	func findTypeID(db: SMARTDB) -> UInt? {
@@ -227,6 +228,14 @@ protocol SMART {
 		get
 	}
 	
+	var name: String? {
+		get set
+	}
+}
+
+protocol PWM_DEV: SMART {
+	func getState() -> (cancelled: Bool, state: Int?)
+	func changeState(state: Int) -> (cancelled: Bool, success: Bool?)
 }
 
 protocol Switch: SMART { 

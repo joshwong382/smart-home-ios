@@ -333,7 +333,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 				let result = apitype.getAPI(firstText: username_field.text, secondText: pass_field.text)
 				
 				if (result.new_api == nil || result.name == nil || result.error) {
-					error_lbl.text = "Error: Unable to Connect"
+					if (result.name == nil || result.name == "") {
+						error_lbl.text = "Error: Unable to Connect"
+					} else {
+						error_lbl.text = result.name
+					}
 					return
 				}
 

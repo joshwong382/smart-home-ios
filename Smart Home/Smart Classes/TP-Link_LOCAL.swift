@@ -64,6 +64,9 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 				if (name == nil) {
 					return (nil, nil)
 				}
+				if (api != nil) {
+					api!.name = name
+				}
 				return (api, name)
 			}
 		}
@@ -111,8 +114,20 @@ class TPLINK_LOCAL: Plug, Local {
 	
 	var connection: IP_CONN
 	
+	private var privname: String? = nil;
+	var name: String? {
+		get {
+			return privname;
+		}
+		
+		set(_name) {
+			privname = _name;
+		}
+	}
+	
 	init?(ip: String) {
 		connection = IP_CONN(string: ip)
+		connection.timeout = 0.5
 		if (connection.isValid()) {
 			print("Using TP-LINK Local Plug")
 		} else {

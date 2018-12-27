@@ -17,13 +17,14 @@
 		420218B420A51C4B00A58E04 /* Smart_HomeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420218B320A51C4B00A58E04 /* Smart_HomeTests.swift */; };
 		420218BF20A51C4B00A58E04 /* Smart_HomeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420218BE20A51C4B00A58E04 /* Smart_HomeUITests.swift */; };
 		421BD825211A371C00D6AD89 /* net_status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421BD824211A371C00D6AD89 /* net_status.swift */; };
+		42441E2A21D444050050DF1E /* WEB_GET.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42441E2921D444050050DF1E /* WEB_GET.swift */; };
 		4249745720A9365500E32626 /* IP_Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4249745620A9365500E32626 /* IP_Connection.swift */; };
 		4249745920A9382700E32626 /* TP-Link_LOCAL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4249745820A9382700E32626 /* TP-Link_LOCAL.swift */; };
 		426D510C20DAECF7002D6680 /* Segue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426D510B20DAECF7002D6680 /* Segue.swift */; };
 		42981FAF2117F269003A8604 /* packed_dataStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42981FAE2117F269003A8604 /* packed_dataStruct.swift */; };
 		429A941720C23B8F00FEFCD1 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429A941620C23B8F00FEFCD1 /* LoginViewController.swift */; };
 		429D43CD21193EA100B81FCA /* IFTTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D43CC21193EA100B81FCA /* IFTTT.swift */; };
-		42AA04C6213DC44E0032BF02 /* WEB_GPIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA04C5213DC44E0032BF02 /* WEB_GPIO.swift */; };
+		42AA04C6213DC44E0032BF02 /* WEB_POST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA04C5213DC44E0032BF02 /* WEB_POST.swift */; };
 		42B172B22102601E00029E3B /* WelcomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B172B12102601E00029E3B /* WelcomeVC.swift */; };
 		42D785E520AAE379009B88C7 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D785E420AAE379009B88C7 /* Protocols.swift */; };
 		42F0CEA62103E046007E6E79 /* DevicesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F0CEA52103E046007E6E79 /* DevicesVC.swift */; };
@@ -67,13 +68,14 @@
 		420218BE20A51C4B00A58E04 /* Smart_HomeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Smart_HomeUITests.swift; sourceTree = "<group>"; };
 		420218C020A51C4B00A58E04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		421BD824211A371C00D6AD89 /* net_status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = net_status.swift; path = "Smart Home/Connection/net_status.swift"; sourceTree = SOURCE_ROOT; };
+		42441E2921D444050050DF1E /* WEB_GET.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WEB_GET.swift; sourceTree = "<group>"; };
 		4249745620A9365500E32626 /* IP_Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IP_Connection.swift; sourceTree = "<group>"; };
 		4249745820A9382700E32626 /* TP-Link_LOCAL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TP-Link_LOCAL.swift"; sourceTree = "<group>"; };
 		426D510B20DAECF7002D6680 /* Segue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segue.swift; sourceTree = "<group>"; };
 		42981FAE2117F269003A8604 /* packed_dataStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = packed_dataStruct.swift; sourceTree = "<group>"; };
 		429A941620C23B8F00FEFCD1 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		429D43CC21193EA100B81FCA /* IFTTT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IFTTT.swift; sourceTree = "<group>"; };
-		42AA04C5213DC44E0032BF02 /* WEB_GPIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WEB_GPIO.swift; sourceTree = "<group>"; };
+		42AA04C5213DC44E0032BF02 /* WEB_POST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WEB_POST.swift; sourceTree = "<group>"; };
 		42B172B12102601E00029E3B /* WelcomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeVC.swift; sourceTree = "<group>"; };
 		42D785E420AAE379009B88C7 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		42F0CEA52103E046007E6E79 /* DevicesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesVC.swift; sourceTree = "<group>"; };
@@ -194,7 +196,8 @@
 				4249745820A9382700E32626 /* TP-Link_LOCAL.swift */,
 				42F5A9E220B41F5500FB570A /* TP-Link_REMOTE.swift */,
 				429D43CC21193EA100B81FCA /* IFTTT.swift */,
-				42AA04C5213DC44E0032BF02 /* WEB_GPIO.swift */,
+				42AA04C5213DC44E0032BF02 /* WEB_POST.swift */,
+				42441E2921D444050050DF1E /* WEB_GET.swift */,
 			);
 			path = "Smart Classes";
 			sourceTree = "<group>";
@@ -456,10 +459,11 @@
 				42F0CEA62103E046007E6E79 /* DevicesVC.swift in Sources */,
 				42F5A9E520B42A8E00FB570A /* JSON_Connection.swift in Sources */,
 				426D510C20DAECF7002D6680 /* Segue.swift in Sources */,
+				42441E2A21D444050050DF1E /* WEB_GET.swift in Sources */,
 				42B172B22102601E00029E3B /* WelcomeVC.swift in Sources */,
 				4202189F20A51C4A00A58E04 /* AppDelegate.swift in Sources */,
 				42FE873421225E1B009DC341 /* Data.swift in Sources */,
-				42AA04C6213DC44E0032BF02 /* WEB_GPIO.swift in Sources */,
+				42AA04C6213DC44E0032BF02 /* WEB_POST.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -643,7 +647,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 88W8RAB8PY;
+				DEVELOPMENT_TEAM = 4WHG9P64B3;
 				INFOPLIST_FILE = "Smart Home/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -653,7 +657,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.josh.smartcontroller;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = 46eb98752381eb5fb26d119410e120f165832869;
+				PROVISIONING_PROFILE_SPECIFIER = f2eb1adea476365ca9838a5656d1f63940a1ece4;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -667,7 +671,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 88W8RAB8PY;
+				DEVELOPMENT_TEAM = 4WHG9P64B3;
 				INFOPLIST_FILE = "Smart Home/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -677,7 +681,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.josh.smartcontroller;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = 46eb98752381eb5fb26d119410e120f165832869;
+				PROVISIONING_PROFILE_SPECIFIER = f2eb1adea476365ca9838a5656d1f63940a1ece4;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -9,14 +9,14 @@
 /*
 
 WEB_GPIO
-Test Request: { command: test }
-Test Response: { test: success/fail }
-On Request: { state: on }
-On Response: { on: success }
-Off Request: { state: off }
-Off Response: { off: success }
-Status Request: { command: status }
-Status Response: { status: on/off/fail }
+Test Request: { "command": "test" }
+Test Response: { "test": "success"/"fail" }
+On Request: { "state": "on" }
+On Response: { "success": true/false }
+Off Request: { "state": "off" }
+Off Response: { "success": true/false }
+Status Request: { "command": "status" }
+Status Response: { "status": "on"/"off"/"fail" }
 
 */
 
@@ -28,7 +28,7 @@ class WEB_GPIO_PROTO: SMARTDB {
 	required init() {}
 	
 	var type_name: String {
-		return "REST API (Web)"
+		return "Web API (POST)"
 	}
 	
 	var obj_type: SMART.Type {
@@ -65,7 +65,8 @@ class WEB_GPIO_PROTO: SMARTDB {
 		if let url = URL(string: json!["url"]!) {
 			if (json!["name"]!.count > 0) {
 				let api = WEB_GPIO(_url: url)
-				return (api, json!["name"]!)
+				api.name = json!["name"]!
+				return (api, api.name)
 			}
 		}
 
@@ -87,9 +88,9 @@ class WEB_GPIO_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		// Check URL Response
 		let test_conn = JSON_CONN(url: url!)
 
-		var a = test_conn.send_string(json: "{ command: test }")
+		var a = test_conn.send_string(json: "{\"command\":\"test\"}")
 		if (a.cancelled) {
-			a = test_conn.send_string(json: "{ command: test }")
+			a = test_conn.send_string(json: "{\"command\":\"test\"}")
 		}
 		
 		if (a.response == nil) {
@@ -106,6 +107,7 @@ class WEB_GPIO_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
 		firstField.placeholder = "Name your Device"
 		secondField.placeholder = "URL"
+		secondField.isSecureTextEntry = false
 		fieldsRequirementLevel = 2
 	}
 }
@@ -113,6 +115,17 @@ class WEB_GPIO_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 class WEB_GPIO: WEB_GPIO_GETINFO, Switch, Remote_SingleDevice {
 	
 	var connection: JSON_CONN?
+	
+	private var privname: String? = nil;
+	var name: String? {
+		get {
+			return privname;
+		}
+		
+		set(_name) {
+			privname = _name;
+		}
+	}
 	
 	var vendor_name: String {
 		return "Web POST"
@@ -138,7 +151,7 @@ class WEB_GPIO: WEB_GPIO_GETINFO, Switch, Remote_SingleDevice {
 	}
 	
 	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
-		let power = connection!.send_string(json: "")
+		let power = connection!.send_string(json: "{\"command\":\"status\"}")
 		
 		if (power.cancelled) {
 			return (true, nil)
@@ -167,9 +180,9 @@ class WEB_GPIO: WEB_GPIO_GETINFO, Switch, Remote_SingleDevice {
 		let response: (cancelled: Bool, response: String?)
 		
 		if (state) {
-			response = connection!.send_string(json: "{ command: on }")
+			response = connection!.send_string(json: "{\"command\": \"on\" }")
 		} else {
-			response = connection!.send_string(json: "{ command: off }")
+			response = connection!.send_string(json: "{ \"command\": \"off\" }")
 		}
 		
 		if (response.cancelled) {

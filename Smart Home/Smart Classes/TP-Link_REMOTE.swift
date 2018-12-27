@@ -19,6 +19,8 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 		}
 	}
 	
+	
+	
 	var obj_type: SMART.Type {
 		get {
 			return TPLINK_REMOTE.self as SMART.Type
@@ -68,6 +70,9 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 				let name = file["name"] as? String
 				if (name == nil) {
 					return (nil, nil)
+				}
+				if (api != nil) {
+					api!.name = name
 				}
 				return (api, name)
 			}
@@ -189,6 +194,17 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 		case LED_ON = "{\\\"system\\\":{\\\"set_led_off\\\":{\\\"off\\\":0}}}"
 		case LED_OFF = "{\\\"system\\\":{\\\"set_led_off\\\":{\\\"off\\\":1}}}"
 		case INFO = "{\\\"system\\\":{\\\"get_sysinfo\\\":null}}"
+	}
+	
+	private var privname: String? = nil;
+	var name: String? {
+		get {
+			return privname;
+		}
+		
+		set(_name) {
+			privname = _name;
+		}
 	}
 	
 	var connection: JSON_CONN?
@@ -328,7 +344,7 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 		var h, m, s: Int
 		(h,m,s) = secToTime(seconds: on_time)
 		//print(h,"h",m,"m",s,"s")
-		return (true, h,m,s)
+		return (false, h,m,s)
 	}
 	
 	func getSpecificState(match: String) -> (cancelled: Bool, state: String?) {
@@ -336,7 +352,7 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 		
 		// Get Plug Info
 		let response = connection!.send_string(json: getAPICalls(api: API.INFO))
-		
+
 		// Check cancelled
 		if (response.cancelled) { return (true, nil) }
 		
@@ -353,6 +369,8 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 		if (json_obj == nil) { return (false, nil) }
 		
 		let relay = json_obj!["system"]["get_sysinfo"][match].stringValue
+		
+		if (match == "on_time" && relay == "0") { return (false, nil) }
 		
 		return (false, relay)
 	}
@@ -384,9 +402,13 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 		json_obj = JSON(parseJSON: json_obj!["result"]["responseData"].stringValue)
 		if (json_obj == nil) { return (false, nil) }
 		
-		let relay = json_obj!["system"]["set_relay_state"]["err_code"].boolValue
+		let relay = json_obj!["system"]["set_relay_state"]["err_code"].intValue
 		
-		return (false, relay)
+		var success: Bool
+		if (relay == 0) { success = true }
+		else { success = false }
+		
+		return (false, success)
 	}
 	
 	// change state of status LED

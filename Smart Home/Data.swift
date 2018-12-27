@@ -72,6 +72,9 @@ class DataManager {
 	
 	// Access tableList
 	func get(index: Int) -> (name: String, api: SMART, current_sess_uid: UInt) {
+		if (tableList[index].api.name == nil) {
+			tableList[index].api.name = tableList[index].name;
+		}
 		return tableList[index]
 	}
 	
