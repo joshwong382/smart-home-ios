@@ -57,11 +57,14 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 				let ip = info["ip"]
 				let port = info["port"]
 				if (ip == nil || port == nil) {
+					print("Load From File Failed")
 					return (nil, nil)
 				}
+				
 				let api = TPLINK_LOCAL(ip: ip! + ":" + port!)
 				let name = file["name"] as? String
 				if (name == nil) {
+					print("Load From File Failed")
 					return (nil, nil)
 				}
 				if (api != nil) {
@@ -70,6 +73,7 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 				return (api, name)
 			}
 		}
+		print("Load From File Failed")
 		return (nil, nil)
 	}
 }

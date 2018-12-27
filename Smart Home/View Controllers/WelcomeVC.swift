@@ -108,39 +108,34 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 			var on_off_sw: UISwitch? = nil
 			
 			var relayState: Bool?
-			DispatchQueue.global().async {
 				
-				let state = reachability.connection
+			let state = reachability.connection
+			
+			if (state != .none) {
+				relayState = self.checkRelayState(api: info.api)
+			} else {
+				relayState = nil
+			}
+			
+			// Offline
+			if (relayState == nil) {
 				
-				if (state != .none) {
-					relayState = self.checkRelayState(api: info.api)
+				self.displayOffline(cell: cell!)
+				
+			} else {
+				
+				if let cell_sw = cell!.accessoryView as? UISwitch {
+					// Don't recreate element
+					cell_sw.isOn = relayState!
 				} else {
-					relayState = nil
-				}
-				
-				DispatchQueue.main.async {
-					
-					// Offline
-					if (relayState == nil) {
-						
-						self.displayOffline(cell: cell!)
-						
-					} else {
-						
-						if let cell_sw = cell!.accessoryView as? UISwitch {
-							// Don't recreate element
-							cell_sw.isOn = relayState!
-						} else {
-							// Cell accessoryView to be a On Off Switch
-							on_off_sw = UISwitch(frame: CGRect(x: 1, y: 1, width: 20, height: 20))
-							on_off_sw!.isOn = relayState!
-							// Set switch tag to index
-							on_off_sw!.tag = indexPath.row
-							// Set switch action to toggle()
-							on_off_sw!.addTarget(self, action: #selector(self.toggle(_:)), for: .valueChanged)
-							cell!.accessoryView = on_off_sw
-						}
-					}
+					// Cell accessoryView to be a On Off Switch
+					on_off_sw = UISwitch(frame: CGRect(x: 1, y: 1, width: 20, height: 20))
+					on_off_sw!.isOn = relayState!
+					// Set switch tag to index
+					on_off_sw!.tag = indexPath.row
+					// Set switch action to toggle()
+					on_off_sw!.addTarget(self, action: #selector(self.toggle(_:)), for: .valueChanged)
+					cell!.accessoryView = on_off_sw
 				}
 			}
 		}

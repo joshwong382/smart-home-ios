@@ -64,11 +64,14 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 				let domain = info!["domain"] as? String
 				let devid = info!["devid"] as? String
 				if (token == nil || domain == nil || devid == nil) {
+					print("Load From File Failed")
 					return (nil, nil)
 				}
+				
 				let api = TPLINK_REMOTE(_token: token!, _url: domain!, _devid: devid!)
 				let name = file["name"] as? String
 				if (name == nil) {
+					print("Load From File Failed")
 					return (nil, nil)
 				}
 				if (api != nil) {
@@ -78,6 +81,7 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 			}
 		}
 		
+		print("Load From File Failed")
 		return (nil, nil)
 	}
 	

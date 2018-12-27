@@ -36,6 +36,13 @@ class DataManager {
 		let fileCount = UserDefaults.standard.integer(forKey: (domain + ".API_count"))
 		for i in 0 ... fileCount {
 			let data = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(i)))
+			
+			if (debug_contains(type: .DATA)) {
+				print("Load Count: " + String(fileCount))
+				print("Load: " + (domain + ".API" + String(i)))
+				print(data!)
+			}
+			
 			if (data != nil) {
 				let typeid = data!["type_id"] as? Int
 				if (typeid == nil) {
@@ -65,6 +72,13 @@ class DataManager {
 		cellUID += 1
 		if (data == nil) { return true }
 		UserDefaults.standard.set(data, forKey: (domain + ".API" + String(count)))
+		
+		if (debug_contains(type: .DATA)) {
+			print("Count: " + String(count))
+			print("Save: " + (domain + ".API" + String(count)) + " For: ")
+			print(data!)
+		}
+		
 		UserDefaults.standard.set(count, forKey: (domain + ".API_count"))
 		UserDefaults.standard.synchronize()
 		return false

@@ -50,11 +50,14 @@ class IFTTT_PROTO: SMARTDB {
 			let token = info!["token"]
 			let event = info!["event"]
 			if (token == nil || event == nil) {
+				print("Load From File Failed")
 				return (nil, nil)
 			}
+			
 			let api = IFTTT(_token: token!, _url: event!)
 			let name = file["name"] as? String
 			if (name == nil) {
+				print("Load From File Failed")
 				return (nil, nil)
 			}
 			if (api != nil) {
@@ -62,6 +65,8 @@ class IFTTT_PROTO: SMARTDB {
 			}
 			return (api, name)
 		}
+		
+		print("Load From File Failed")
 		return (nil, nil)
 	}
 	

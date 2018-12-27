@@ -37,6 +37,7 @@ class WEB_GET_PROTO: SMARTDB {
 			
 			let url = web_get_api.get_info()
 			let json: [String: Any] = [
+				"type_id": type(of: self).type_id,
 				"name": name,
 				"url": url.absoluteString
 			]
@@ -47,21 +48,17 @@ class WEB_GET_PROTO: SMARTDB {
 	
 	func load_from_file(file: [String : Any]) -> (api: SMART?, name: String?) {
 		
-		let json = file as? [String: String]
+		let url_string = file["url"] as? String
+		if (url_string == nil) { print("Load From File Failed"); return (nil, nil) }
 		
-		if (json == nil) {
-			return (nil, nil)
-		}
+		let url = URL(string: url_string!)
+		if (url == nil) { print("Load From File Failed"); return (nil, nil) }
 		
-		if let url = URL(string: json!["url"]!) {
-			if (json!["name"]!.count > 0) {
-				let api = WEB_GET(url: url)
-				api.name = json!["name"]!
-				return (api, api.name)
-			}
-		}
+		let name = file["name"] as? String
 		
-		return (nil, nil)
+		let api = WEB_GET(url: url!)
+		api.name = name
+		return (api, name)
 	}
 	
 }
@@ -131,7 +128,7 @@ class WEB_GET: WEB_GET_GETINFO, Switch {
 	}
 	
 	var type_id: UInt {
-		return WEB_GPIO_PROTO.type_id
+		return WEB_GET_PROTO.type_id
 	}
 	
 	// Functions

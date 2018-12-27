@@ -111,6 +111,7 @@ class JSON_CONN: Connection {
 		
 		request.httpMethod = type
 		request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringCacheData
+		URLCache.shared.removeCachedResponse(for: request as URLRequest)
 		
 		if (type == "POST") {
 			request.httpBody = post_contents.data(using: String.Encoding.utf8)

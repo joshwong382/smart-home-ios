@@ -14,9 +14,10 @@ enum DEBUG_STR {
 	case TCP
 	case UIViewWelcome
 	case TokenUpdate
+	case DATA
 }
 
-let debug: [DEBUG_STR] = []
+let debug: [DEBUG_STR] = [.DATA]
 
 // to use debug
 // if (debug_contains(type: .JSON)) {}

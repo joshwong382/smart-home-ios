@@ -59,6 +59,7 @@ class WEB_GPIO_PROTO: SMARTDB {
 		let json = file as? [String: String]
 		
 		if (json == nil) {
+			print("Load From File Failed")
 			return (nil, nil)
 		}
 		
@@ -70,6 +71,7 @@ class WEB_GPIO_PROTO: SMARTDB {
 			}
 		}
 
+		print("Load From File Failed")
 		return (nil, nil)
 	}
 	

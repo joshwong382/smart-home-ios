@@ -29,7 +29,7 @@
 		42D785E520AAE379009B88C7 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D785E420AAE379009B88C7 /* Protocols.swift */; };
 		42F0CEA62103E046007E6E79 /* DevicesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F0CEA52103E046007E6E79 /* DevicesVC.swift */; };
 		42F5A9E320B41F5500FB570A /* TP-Link_REMOTE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A9E220B41F5500FB570A /* TP-Link_REMOTE.swift */; };
-		42F5A9E520B42A8E00FB570A /* JSON_Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A9E420B42A8E00FB570A /* JSON_Connection.swift */; };
+		42F5A9E520B42A8E00FB570A /* HTTP_Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A9E420B42A8E00FB570A /* HTTP_Connection.swift */; };
 		42FE873421225E1B009DC341 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FE873321225E1B009DC341 /* Data.swift */; };
 		8B950E8A87FD5D435757D915 /* Pods_Smart_HomeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4301FA28AAE92D1A5066754 /* Pods_Smart_HomeUITests.framework */; };
 /* End PBXBuildFile section */
@@ -80,7 +80,7 @@
 		42D785E420AAE379009B88C7 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		42F0CEA52103E046007E6E79 /* DevicesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesVC.swift; sourceTree = "<group>"; };
 		42F5A9E220B41F5500FB570A /* TP-Link_REMOTE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TP-Link_REMOTE.swift"; sourceTree = "<group>"; };
-		42F5A9E420B42A8E00FB570A /* JSON_Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON_Connection.swift; sourceTree = "<group>"; };
+		42F5A9E420B42A8E00FB570A /* HTTP_Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTP_Connection.swift; sourceTree = "<group>"; };
 		42FE873321225E1B009DC341 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Data.swift; path = "Smart Home/Data.swift"; sourceTree = SOURCE_ROOT; };
 		453D54B75B16E7D40C22E602 /* Pods-Smart Home.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smart Home.release.xcconfig"; path = "Pods/Target Support Files/Pods-Smart Home/Pods-Smart Home.release.xcconfig"; sourceTree = "<group>"; };
 		70FE9940A87E625B69519410 /* Pods-Smart HomeUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smart HomeUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Smart HomeUITests/Pods-Smart HomeUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 		42F0CEA22103DFDB007E6E79 /* Connection */ = {
 			isa = PBXGroup;
 			children = (
-				42F5A9E420B42A8E00FB570A /* JSON_Connection.swift */,
+				42F5A9E420B42A8E00FB570A /* HTTP_Connection.swift */,
 				4249745620A9365500E32626 /* IP_Connection.swift */,
 				42981FAE2117F269003A8604 /* packed_dataStruct.swift */,
 				421BD824211A371C00D6AD89 /* net_status.swift */,
@@ -457,7 +457,7 @@
 				42D785E520AAE379009B88C7 /* Protocols.swift in Sources */,
 				421BD825211A371C00D6AD89 /* net_status.swift in Sources */,
 				42F0CEA62103E046007E6E79 /* DevicesVC.swift in Sources */,
-				42F5A9E520B42A8E00FB570A /* JSON_Connection.swift in Sources */,
+				42F5A9E520B42A8E00FB570A /* HTTP_Connection.swift in Sources */,
 				426D510C20DAECF7002D6680 /* Segue.swift in Sources */,
 				42441E2A21D444050050DF1E /* WEB_GET.swift in Sources */,
 				42B172B22102601E00029E3B /* WelcomeVC.swift in Sources */,
