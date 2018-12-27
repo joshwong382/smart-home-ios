@@ -17,7 +17,7 @@ enum DEBUG_STR {
 	case DATA
 }
 
-let debug: [DEBUG_STR] = [.DATA]
+let debug: [DEBUG_STR] = []
 
 // to use debug
 // if (debug_contains(type: .JSON)) {}

@@ -18,7 +18,7 @@ class JSON_CONN: Connection {
 	
 	private var conn_url: URL?
 	private var valid: Bool = false
-	private var queue = [URLSessionDataTask]()
+	static private var queue = [URLSessionDataTask]()
 	
 	/*-----------------------------------------------
 	/
@@ -133,6 +133,9 @@ class JSON_CONN: Connection {
 			success = true
 		}
 		
+		task.taskDescription = url.absoluteString + type + post_contents
+		queue.append(task)
+		
 		let current_time = DispatchTime.now().uptimeNanoseconds
 		task.resume()
 		
@@ -169,8 +172,8 @@ class JSON_CONN: Connection {
 		}
 		
 		// Check existing queues with the same data
-		for operation_q in queue {
-			if (operation_q.taskDescription == json) {
+		for operation_q in JSON_CONN.queue {
+			if (operation_q.taskDescription == url_type.absoluteString + "POST" + json) {
 				operation_q.cancel()
 			}
 		}
@@ -201,13 +204,13 @@ class JSON_CONN: Connection {
 				return
 			}
 			
-			dataString =  String(data: data, encoding: String.Encoding.utf8)
+			dataString = String(data: data, encoding: String.Encoding.utf8)
 			success = true
 		}
 		
 		// Define task by json
-		task.taskDescription = json
-		queue.append(task)
+		task.taskDescription = url_type.absoluteString + request.httpMethod! + json
+		JSON_CONN.queue.append(task)
 		
 		let current_time = DispatchTime.now().uptimeNanoseconds
 		task.resume()

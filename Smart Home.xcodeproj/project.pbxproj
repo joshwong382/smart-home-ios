@@ -159,9 +159,9 @@
 			children = (
 				4202189E20A51C4A00A58E04 /* AppDelegate.swift */,
 				42FE873321225E1B009DC341 /* Data.swift */,
+				42D785E420AAE379009B88C7 /* Protocols.swift */,
 				42F0CEA42103DFFF007E6E79 /* View Controllers */,
 				42F0CEA22103DFDB007E6E79 /* Connection */,
-				42D785E420AAE379009B88C7 /* Protocols.swift */,
 				42A490E52105680F007FFD8F /* Smart Classes */,
 				420218A220A51C4A00A58E04 /* Main.storyboard */,
 				426D510B20DAECF7002D6680 /* Segue.swift */,

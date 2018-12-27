@@ -12,6 +12,8 @@ import Reachability
 // Table is handled by the View Controller
 class UIViewWelcome: ReachabilityTableVCDelegate {
 	
+	private var TCP_state_queue = [(cell: UITableViewCell, api: SMART, indexPath: IndexPath)]()
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -24,6 +26,7 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		navigationItem.rightBarButtonItem = add_btn
 
 		// Table Subview is refresh
+		threaded_check_relay_state()
 		tableView.addSubview(refresh)
 	}
 	
@@ -103,41 +106,8 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		
 		// Check Current State for Plug
 		if (info.api is Plug || info.api is Switch) {
-			
-			// Create on-off switch
-			var on_off_sw: UISwitch? = nil
-			
-			var relayState: Bool?
-				
-			let state = reachability.connection
-			
-			if (state != .none) {
-				relayState = self.checkRelayState(api: info.api)
-			} else {
-				relayState = nil
-			}
-			
-			// Offline
-			if (relayState == nil) {
-				
-				self.displayOffline(cell: cell!)
-				
-			} else {
-				
-				if let cell_sw = cell!.accessoryView as? UISwitch {
-					// Don't recreate element
-					cell_sw.isOn = relayState!
-				} else {
-					// Cell accessoryView to be a On Off Switch
-					on_off_sw = UISwitch(frame: CGRect(x: 1, y: 1, width: 20, height: 20))
-					on_off_sw!.isOn = relayState!
-					// Set switch tag to index
-					on_off_sw!.tag = indexPath.row
-					// Set switch action to toggle()
-					on_off_sw!.addTarget(self, action: #selector(self.toggle(_:)), for: .valueChanged)
-					cell!.accessoryView = on_off_sw
-				}
-			}
+			TCP_state_queue.append((cell: cell!, api: info.api, indexPath: indexPath))
+			print(TCP_state_queue.count)
 		}
 		
 		// No need to check state for trigger
@@ -222,10 +192,10 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	@objc func edit(_ sender: UIBarButtonItem) {
 		
 		if(self.tableView.isEditing) {
-			self.tableView.isEditing = false
+			self.tableView.setEditing(false, animated: true)
 			self.navigationItem.leftBarButtonItem?.title = "Edit"
 		} else {
-			self.tableView.isEditing = true
+			self.tableView.setEditing(true, animated: true)
 			self.navigationItem.leftBarButtonItem?.title = "Done"
 		}
 		
@@ -254,7 +224,24 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		tableView.reloadData()
 	}
 	
-	func checkRelayState(api: SMART) -> Bool? {
+	/*
+
+		PRIVATE THREAD TCP STATE QUEUE FUNCTIONS
+
+	*/
+	
+	private func threaded_check_relay_state() {
+		DispatchQueue.global().async {
+			while (true) {
+				if (!self.TCP_state_queue.isEmpty) {
+					let info = self.TCP_state_queue.removeFirst()
+					self.accessoryViewCreation(cell: info.cell, api: info.api, indexPath: info.indexPath)
+				}
+			}
+		}
+	}
+	
+	private func checkRelayState(api: SMART) -> Bool? {
 		if let PlugAPI = api as? Plug {
 			let result = PlugAPI.getCommonStates()
 			return result.pwr
@@ -265,6 +252,49 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 			return result.pwr
 		}
 		return nil
+	}
+	
+	// Run the check relay state with all the necessary UI changes
+	private func accessoryViewCreation(cell: UITableViewCell, api: SMART, indexPath: IndexPath) {
+		
+		// Create on-off switch
+		var on_off_sw: UISwitch? = nil
+		
+		var relayState: Bool?
+		
+		let state = reachability.connection
+		
+		if (state != .none) {
+			relayState = self.checkRelayState(api: api)
+		} else {
+			relayState = nil
+		}
+		
+		// Update UI
+		DispatchQueue.main.async {
+
+			// Offline
+			if (relayState == nil) {
+				
+				self.displayOffline(cell: cell)
+				
+			} else {
+				
+				if let cell_sw = cell.accessoryView as? UISwitch {
+					// Don't recreate element
+					cell_sw.isOn = relayState!
+				} else {
+					// Cell accessoryView to be a On Off Switch
+					on_off_sw = UISwitch(frame: CGRect(x: 1, y: 1, width: 20, height: 20))
+					on_off_sw!.isOn = relayState!
+					// Set switch tag to index
+					on_off_sw!.tag = indexPath.row
+					// Set switch action to toggle()
+					on_off_sw!.addTarget(self, action: #selector(self.toggle(_:)), for: .valueChanged)
+					cell.accessoryView = on_off_sw
+				}
+			}
+		}
 	}
 	
 	// Reachability
