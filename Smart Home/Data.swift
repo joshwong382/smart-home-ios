@@ -28,7 +28,7 @@ class DataManager {
 		}
 	}
 	
-	var domain: String {
+	private var domain: String {
 		return Bundle.main.bundleIdentifier!
 	}
 	
@@ -82,36 +82,6 @@ class DataManager {
 		// Remove last object as it's duplicated
 		UserDefaults.standard.removeObject(forKey: domain + ".API" + String(count))
 	}
-	
-	/*
-	func move(prevIndex: Int, toIndex: Int) {
-		if (debug_contains(type: .DATA)) {
-			print("Load: " + (domain + ".API" + String(prevIndex)))
-		}
-		let prevdata = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(prevIndex)))
-		
-		if (toIndex == prevIndex) { print("Invalid Move!!!") }
-		if (toIndex < prevIndex) {
-			// move them down one by one
-			for i in (toIndex ... prevIndex).reversed() {
-				let tempdata = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(i-1)))
-				UserDefaults.standard.set(tempdata, forKey: (domain + ".API" + String(i)))
-			}
-			UserDefaults.standard.set(prevdata, forKey: (domain + ".API" + String(toIndex)))
-		}
-		
-		if (toIndex > prevIndex) {
-			// move them up one by one
-			for i in toIndex ... prevIndex {
-				let tempdata = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(i+1)))
-				UserDefaults.standard.set(tempdata, forKey: (domain + ".API" + String(i)))
-			}
-			UserDefaults.standard.set(prevdata, forKey: (domain + ".API" + String(toIndex)))
-		}
-		
-		UserDefaults.standard.synchronize()
-		fromFile()
-	}*/
 	
 	func move(prevIndex: Int, toIndex: Int) {
 		if (debug.contains(.DATA)) {
@@ -171,18 +141,20 @@ class DataManager {
 	}
 	
 	// Sync from list to storage
-	private func sync_from_tableList_to_storage(fromIndex: Int = 0, toIndex: Int) {
-
-		if (toIndex < 0) { return }
-		if (toIndex < fromIndex) { return }
+	func sync_from_tableList_to_storage(fromIndex: Int = 0, toIndex: Int = -1) {
+		
+		var to_index: Int = toIndex
+		if (toIndex == -1) { to_index = count }
+		if (to_index < 0) { return }
+		if (to_index < fromIndex) { return }
 		
 		if (debug.contains(.DATA)) {
-			print("Sync index " + String(fromIndex) + " to " + String(toIndex))
+			print("Sync index " + String(fromIndex) + " to " + String(to_index))
 		}
 		
 		DispatchQueue.global().async {
 			if (toIndex < self.count) {
-				for i in (fromIndex...toIndex).reversed() {
+				for i in (fromIndex...to_index).reversed() {
 					let list = self.get(index: i)
 					let data = protocols.getProtoByTypeID(id: Int(list.api.type_id))?.save_to_file(api: list.api)
 					UserDefaults.standard.set(data, forKey: (self.domain + ".API" + String(i)))
