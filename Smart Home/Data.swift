@@ -114,12 +114,18 @@ class DataManager {
 	}*/
 	
 	func move(prevIndex: Int, toIndex: Int) {
+		if (debug.contains(.DATA)) {
+			print("Moving a row")
+		}
+		let element = tableList.remove(at: prevIndex)
+		tableList.insert(element, at: toIndex)
+		sync_from_tableList_to_storage(fromIndex: prevIndex, toIndex: toIndex)
 	}
 	
 	private func load_entry(index: UInt) -> SMART? {
 		let data = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(index)))
 		
-		if (debug_contains(type: .DATA)) {
+		if (debug.contains(.DATA)) {
 			print("Load: " + (domain + ".API" + String(index)))
 			//print(data!)
 		}
@@ -156,7 +162,7 @@ class DataManager {
 		UserDefaults.standard.set(count, forKey: (domain + ".API_count"))
 		UserDefaults.standard.synchronize()
 		
-		if (debug_contains(type: .DATA)) {
+		if (debug.contains(.DATA)) {
 			print("Count: " + String(count) + ", Index: " + String(index))
 			print("Save: " + (domain + ".API" + String(index)) + " For: ")
 			print(data!)
@@ -170,26 +176,38 @@ class DataManager {
 		if (toIndex < 0) { return }
 		if (toIndex < fromIndex) { return }
 		
-		if (toIndex < count) {
-			for i in (fromIndex...toIndex).reversed() {
-				let list = get(index: i)
-				let data = protocols.getProtoByTypeID(id: Int(list.api.type_id))?.save_to_file(api: list.api)
-				UserDefaults.standard.set(data, forKey: (domain + ".API" + String(i)))
+		if (debug.contains(.DATA)) {
+			print("Sync index " + String(fromIndex) + " to " + String(toIndex))
+		}
+		
+		DispatchQueue.global().async {
+			if (toIndex < self.count) {
+				for i in (fromIndex...toIndex).reversed() {
+					let list = self.get(index: i)
+					let data = protocols.getProtoByTypeID(id: Int(list.api.type_id))?.save_to_file(api: list.api)
+					UserDefaults.standard.set(data, forKey: (self.domain + ".API" + String(i)))
+				}
 			}
+		
+			UserDefaults.standard.set(self.count, forKey: (self.domain + ".API_count"))
+			UserDefaults.standard.synchronize()
 		}
 		
 		if (debug.contains(.DATA)) {
-			print("Set Count: " + String(count))
+			print("Update Count: " + String(count))
 		}
-		UserDefaults.standard.set(count, forKey: (domain + ".API_count"))
-		UserDefaults.standard.synchronize()
 	}
 	
 	func clearAll() {
-		print("Remove All")
+		if (debug.contains(.DATA)) {
+			print("Remove All")
+		}
+		
 		tableList.removeAll()
-		let domain = Bundle.main.bundleIdentifier!
-		UserDefaults.standard.removePersistentDomain(forName: domain)
-		UserDefaults.standard.synchronize()
+		
+		DispatchQueue.global().async {
+			UserDefaults.standard.removePersistentDomain(forName: self.domain)
+			UserDefaults.standard.synchronize()
+		}
 	}
 }

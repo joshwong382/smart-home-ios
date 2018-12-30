@@ -69,7 +69,7 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	
 	// Number of cells
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if (debug_contains(type: .UIViewWelcome)) {
+		if (debug.contains(.UIViewWelcome)) {
 			print("Table Item Count: " + String(api_data.count))
 		}
 		return api_data.count
@@ -208,7 +208,7 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	}
 	
 	func reloadData() {
-		if (debug_contains(type: .UIViewWelcome)) {
+		if (debug.contains(.UIViewWelcome)) {
 			print("reloading...")
 		}
 		

@@ -142,7 +142,7 @@ class JSON_CONN: Connection {
 		// Wait til task comes back or timeout in 5 seconds
 		while (!success && DispatchTime.now().uptimeNanoseconds - current_time < UInt64(_timeout*1e9)) {}
 		
-		if (debug_contains(type: .JSON)) {
+		if (debug.contains(.JSON)) {
 			print("URL: " + url.absoluteString)
 			print("/*******************************")
 			print(dataString ?? "RESPONSE NIL")
@@ -230,7 +230,7 @@ class JSON_CONN: Connection {
 			}
 			
 		}
-		if (debug_contains(type: .JSON)) {
+		if (debug.contains(.JSON)) {
 			print("JSON RESPONSE")
 			print("/*******************************")
 			print(dataString ?? "RESPONSE NIL")

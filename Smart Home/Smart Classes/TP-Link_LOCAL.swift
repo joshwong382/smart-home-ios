@@ -202,7 +202,7 @@ class TPLINK_LOCAL: Plug, Local {
 		
 		json = "{" + json
 		
-		if (debug_contains(type: .TCP)) {
+		if (debug.contains(.TCP)) {
 			print("/*************")
 			print(response)
 			print("*************/")

@@ -9,18 +9,6 @@
 import UIKit
 import SwiftyJSON
 
-// to use debug
-// if (debug_contains(type: .JSON)) {}
-
-func debug_contains(type: DEBUG_STR) -> Bool {
-	for types in debug {
-		if (types == type) {
-			return true
-		}
-	}
-	return false
-}
-
 // Connection Protocols follow Connection
 protocol Connection {
 	var timeout: Double {

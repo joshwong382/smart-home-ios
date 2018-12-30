@@ -301,7 +301,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 										var api = api_type.init(_token: response!, _url: device.api_url, _devid: device.device_id) as! SMART
 										api.name = device.alias
 										
-										if (debug_contains(type: .TokenUpdate)) {
+										if (debug.contains(.TokenUpdate)) {
 											print("Token: " + response!)
 											print("Domain: " + device.api_url)
 											print("Device ID: " + device.device_id)
