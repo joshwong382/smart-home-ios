@@ -110,11 +110,11 @@ class WEB_GPIO_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 
 	}
 	
-	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
+	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout FIELD_REQUIREMENTS) {
 		firstField.placeholder = "Name your Device"
 		secondField.placeholder = "URL"
 		secondField.isSecureTextEntry = false
-		fieldsRequirementLevel = 2
+		fieldsRequirementLevel = .BOTH_FIELDS
 	}
 }
 

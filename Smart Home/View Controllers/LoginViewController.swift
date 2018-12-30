@@ -20,20 +20,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 	// Previous View Controller Object
 	var previousVC: UIViewController? = nil
 	
-	// No Fields Required = 0
-	// First Field Required = 1
-	// Both Fields Required = 2
-	private var fieldsRL: UInt = 2
-	var fieldsRequiredLevel: UInt {
+	private var fieldsRL: FIELD_REQUIREMENTS = .BOTH_FIELDS
+	var fieldsRequiredLevel: FIELD_REQUIREMENTS {
 		get {
 			return fieldsRL
 		}
 		set(_fieldsRL) {
-			if (_fieldsRL <= 2) {
-				fieldsRL = _fieldsRL
-			} else {
-				print(String(_fieldsRL) + " is not a Valid Int")
-			}
+			fieldsRL = _fieldsRL
 		}
 	}
 	
@@ -156,11 +149,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 	
 	func checkEmpty() {
 		
-		if (fieldsRequiredLevel == 0) {
+		if (fieldsRequiredLevel == .NO_REQUIREMENTS) {
 			login_btn.isEnabled = true
 		}
 		
-		if (fieldsRequiredLevel == 1) {
+		if (fieldsRequiredLevel == .FIRST_FIELD) {
 			if (username_field.text == "") {
 				login_btn.isEnabled = false
 			} else {
@@ -168,7 +161,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 			}
 		}
 		
-		if (fieldsRequiredLevel == 2) {
+		if (fieldsRequiredLevel == .BOTH_FIELDS) {
 			if (username_field.text == "" || pass_field.text == "") {
 				login_btn.isEnabled = false
 			} else {

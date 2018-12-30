@@ -85,14 +85,11 @@ class WEB_GET_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		return (false, "", api)
 	}
 	
-	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
+	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout FIELD_REQUIREMENTS) {
 		firstField.placeholder = "Name your Device"
 		secondField.placeholder = "URL (eg. http://example.com/led1)"
 		secondField.isSecureTextEntry = false
-		// No Fields Required = 0
-		// First Field Required = 1
-		// Both Fields Required = 2
-		fieldsRequirementLevel = 2
+		fieldsRequirementLevel = .BOTH_FIELDS
 	}
 }
 

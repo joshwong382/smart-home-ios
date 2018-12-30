@@ -23,6 +23,15 @@ enum DEBUG_STR {
 	case DATA
 }
 
+// No Fields Required = 0
+// First Field Required = 1
+// Both Fields Required = 2
+enum FIELD_REQUIREMENTS {
+	case NO_REQUIREMENTS
+	case FIRST_FIELD
+	case BOTH_FIELDS
+}
+
 func twoDigitInt(int: Int) -> String {
 	if (int < 10) { return ("0" + String(int)) }
 	else { return String(int) }

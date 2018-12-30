@@ -80,8 +80,8 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 
 class TPLINK_LOCAL_LOGIN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 	
-	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
-		fieldsRequirementLevel = 1
+	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout FIELD_REQUIREMENTS) {
+		fieldsRequirementLevel = .FIRST_FIELD
 		firstField.placeholder = "IP(:PORT) or URL"
 		secondField.isHidden = true
 	}

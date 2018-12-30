@@ -85,7 +85,7 @@ class IFTTT_GETTOKEN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		return url_1 + event + url_2 + token
 	}
 	
-	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
+	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout FIELD_REQUIREMENTS) {
 		firstField.placeholder = "Event Name"
 		secondField.placeholder = "API Key"
 		secondField.isSecureTextEntry = false

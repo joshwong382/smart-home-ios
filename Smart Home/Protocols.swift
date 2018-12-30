@@ -153,7 +153,7 @@ protocol Remote_TokenHasExpiry: Remote {
 ****************************/
 
 protocol LOGIN_UIOVERRIDES: GET_API {
-	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt)
+	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout FIELD_REQUIREMENTS)
 }
 
 // GET_API to identify all login methods for LoginVC
