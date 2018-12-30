@@ -13,13 +13,13 @@ let api_data = DataManager()
 class DataManager {
 	
 	init() {
-		tableList = [(name: String, api: SMART, current_sess_uid: UInt)]()
+		tableList = [(api: SMART, current_sess_uid: UInt)]()
 		cellUID = 0
 		fromFile()
 	}
 	
 	//private var fileManager: FileManager = FileManager.default
-	private var tableList: [(name: String, api: SMART, current_sess_uid: UInt)]
+	private var tableList: [(api: SMART, current_sess_uid: UInt)]
 	private var cellUID: UInt
 	
 	var count: Int {
@@ -33,62 +33,33 @@ class DataManager {
 	}
 	
 	private func fromFile() {
+		//print("Load Count: " + String(fileCount))
+		cellUID = 0
+		tableList.removeAll()
+		
 		let fileCount = UserDefaults.standard.integer(forKey: (domain + ".API_count"))
-		for i in 0 ... fileCount {
-			let data = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(i)))
+		if (debug.contains(.DATA)) {
+			print("Count: " + String(fileCount))
+		}
+		if (fileCount == 0) { return }
+		for i in 0 ... fileCount-1 {
 			
-			if (debug_contains(type: .DATA)) {
-				print("Load Count: " + String(fileCount))
-				print("Load: " + (domain + ".API" + String(i)))
-				print(data!)
-			}
-			
-			if (data != nil) {
-				let typeid = data!["type_id"] as? Int
-				if (typeid == nil) {
-					return
-				}
-				
-				let result = protocols.getProtoByTypeID(id: typeid!)?.load_from_file(file: data!)
-				if (result?.api == nil) {
-					return
-				}
-				tableList.append((name: result!.name!, api: result!.api!, current_sess_uid: cellUID))
+			let result = load_entry(index: UInt(i))
+			if (result != nil) {
+				tableList.append((api: result!, current_sess_uid: cellUID))
 				cellUID += 1
 			}
 		}
 	}
 	
 	// Add to tableList
-	func add(name: String, api: SMART) -> Bool {
-		let count = self.count
-		tableList.append((name: name, api: api, current_sess_uid: cellUID))
-		let data = protocols.getProtoByTypeID(id: Int(api.type_id))?.save_to_file(api: api, name: name)
-		
-		if (data!.isEmpty) {
-			print("Permanent Storage Failed")
-		}
-		
-		cellUID += 1
-		if (data == nil) { return true }
-		UserDefaults.standard.set(data, forKey: (domain + ".API" + String(count)))
-		
-		if (debug_contains(type: .DATA)) {
-			print("Count: " + String(count))
-			print("Save: " + (domain + ".API" + String(count)) + " For: ")
-			print(data!)
-		}
-		
-		UserDefaults.standard.set(count, forKey: (domain + ".API_count"))
-		UserDefaults.standard.synchronize()
-		return false
+	func add(api: SMART) -> Bool {
+		tableList.append((api: api, current_sess_uid: cellUID))
+		return update_entry(api: api, index: UInt(count-1))
 	}
 	
 	// Access tableList
-	func get(index: Int) -> (name: String, api: SMART, current_sess_uid: UInt) {
-		if (tableList[index].api.name == nil) {
-			tableList[index].api.name = tableList[index].name;
-		}
+	func get(index: Int) -> (api: SMART, current_sess_uid: UInt) {
 		return tableList[index]
 	}
 	
@@ -103,26 +74,119 @@ class DataManager {
 		}
 		
 		// Recreate Persistent Info
-		sync(fromIndex: index)
+		if (debug.contains(.DATA)) {
+			print("After Delete Count: " + String(count))
+		}
+		sync_from_tableList_to_storage(fromIndex: index, toIndex: count)
 		
 		// Remove last object as it's duplicated
 		UserDefaults.standard.removeObject(forKey: domain + ".API" + String(count))
 	}
 	
+	/*
+	func move(prevIndex: Int, toIndex: Int) {
+		if (debug_contains(type: .DATA)) {
+			print("Load: " + (domain + ".API" + String(prevIndex)))
+		}
+		let prevdata = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(prevIndex)))
+		
+		if (toIndex == prevIndex) { print("Invalid Move!!!") }
+		if (toIndex < prevIndex) {
+			// move them down one by one
+			for i in (toIndex ... prevIndex).reversed() {
+				let tempdata = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(i-1)))
+				UserDefaults.standard.set(tempdata, forKey: (domain + ".API" + String(i)))
+			}
+			UserDefaults.standard.set(prevdata, forKey: (domain + ".API" + String(toIndex)))
+		}
+		
+		if (toIndex > prevIndex) {
+			// move them up one by one
+			for i in toIndex ... prevIndex {
+				let tempdata = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(i+1)))
+				UserDefaults.standard.set(tempdata, forKey: (domain + ".API" + String(i)))
+			}
+			UserDefaults.standard.set(prevdata, forKey: (domain + ".API" + String(toIndex)))
+		}
+		
+		UserDefaults.standard.synchronize()
+		fromFile()
+	}*/
+	
+	func move(prevIndex: Int, toIndex: Int) {
+	}
+	
+	private func load_entry(index: UInt) -> SMART? {
+		let data = UserDefaults.standard.dictionary(forKey: (domain + ".API" + String(index)))
+		
+		if (debug_contains(type: .DATA)) {
+			print("Load: " + (domain + ".API" + String(index)))
+			//print(data!)
+		}
+		
+		if (data != nil) {
+			let typeid = data!["type_id"] as? Int
+			if (typeid == nil) {
+				return nil
+			}
+			
+			let result = protocols.getProtoByTypeID(id: typeid!)?.load_from_file(file: data!)
+			if (result == nil) {
+				return nil
+			}
+			
+			return result!
+		}
+		
+		return nil
+	}
+	
+	private func update_entry(api: SMART, index: UInt) -> Bool {
+		let data = protocols.getProtoByTypeID(id: Int(api.type_id))?.save_to_file(api: api)
+		
+		if (data!.isEmpty) {
+			print("Permanent Storage Failed")
+		}
+		
+		cellUID += 1
+		if (data == nil) { return true }
+		UserDefaults.standard.set(data, forKey: (domain + ".API" + String(index)))
+
+		// set count
+		UserDefaults.standard.set(count, forKey: (domain + ".API_count"))
+		UserDefaults.standard.synchronize()
+		
+		if (debug_contains(type: .DATA)) {
+			print("Count: " + String(count) + ", Index: " + String(index))
+			print("Save: " + (domain + ".API" + String(index)) + " For: ")
+			print(data!)
+		}
+		return false
+	}
+	
 	// Sync from list to storage
-	private func sync(fromIndex: Int = 0) {
-		if (fromIndex < count) {
-			for i in fromIndex...count {
-				let list = get(index: i-1)
-				let data = protocols.getProtoByTypeID(id: Int(list.api.type_id))?.save_to_file(api: list.api, name: list.name)
+	private func sync_from_tableList_to_storage(fromIndex: Int = 0, toIndex: Int) {
+
+		if (toIndex < 0) { return }
+		if (toIndex < fromIndex) { return }
+		
+		if (toIndex < count) {
+			for i in (fromIndex...toIndex).reversed() {
+				let list = get(index: i)
+				let data = protocols.getProtoByTypeID(id: Int(list.api.type_id))?.save_to_file(api: list.api)
 				UserDefaults.standard.set(data, forKey: (domain + ".API" + String(i)))
 			}
+		}
+		
+		if (debug.contains(.DATA)) {
+			print("Set Count: " + String(count))
 		}
 		UserDefaults.standard.set(count, forKey: (domain + ".API_count"))
 		UserDefaults.standard.synchronize()
 	}
 	
 	func clearAll() {
+		print("Remove All")
 		tableList.removeAll()
 		let domain = Bundle.main.bundleIdentifier!
 		UserDefaults.standard.removePersistentDomain(forName: domain)

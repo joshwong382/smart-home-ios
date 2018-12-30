@@ -25,14 +25,14 @@ class IFTTT_PROTO: SMARTDB {
 		return IFTTT_GETTOKEN()
 	}
 	
-	func save_to_file(api: SMART, name: String) -> [String : Any] {
+	func save_to_file(api: SMART) -> [String : Any] {
 		
 		if let ifttt_api = api as? IFTTT {
 			
 			let info = ifttt_api.get_info()
 			let json: [String: Any] = [
 				"type_id": type(of: self).type_id,
-				"name": name,
+				"name": api.name,
 				"info": [
 					"token": info.token,
 					"event": info.event
@@ -43,7 +43,7 @@ class IFTTT_PROTO: SMARTDB {
 		return [:]
 	}
 	
-	func load_from_file(file: [String : Any]) -> (api: SMART?, name: String?) {
+	func load_from_file(file: [String : Any]) -> SMART? {
 		
 		let info = file["info"] as? [String : String]
 		if (info != nil) {
@@ -51,23 +51,23 @@ class IFTTT_PROTO: SMARTDB {
 			let event = info!["event"]
 			if (token == nil || event == nil) {
 				print("Load From File Failed")
-				return (nil, nil)
+				return nil
 			}
 			
 			let api = IFTTT(_token: token!, _url: event!)
 			let name = file["name"] as? String
 			if (name == nil) {
 				print("Load From File Failed")
-				return (nil, nil)
+				return nil
 			}
 			if (api != nil) {
-				api!.name = name
+				api!.name = name ?? ""
 			}
-			return (api, name)
+			return api
 		}
 		
 		print("Load From File Failed")
-		return (nil, nil)
+		return nil
 	}
 	
 }
@@ -91,13 +91,13 @@ class IFTTT_GETTOKEN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		secondField.isSecureTextEntry = false
 	}
 	
-	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, new_api: SMART?, name: String?) {
+	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, errstr: String, new_api: SMART?) {
 		
 		self.token = secondText!
 		self.event = firstText!
 		
 		guard let _connection = JSON_CONN(url: url) else {
-			return (true, nil, "Error: Incorrect Information")
+			return (true, "Error: Incorrect Information", nil)
 		}
 		connection = _connection
 		
@@ -106,13 +106,16 @@ class IFTTT_GETTOKEN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		if (result.success == true) {
 			// URL is the event
 			let api = IFTTT(_token: token, _url: event)
-			return (false, api, event)
+			if (api != nil) {
+				api!.name = event
+			}
+			return (false, "", api)
 			
 		} else if (result.msg != nil) {
-			return (true, nil, result.msg!)
+			return (true, result.msg!, nil)
 			
 		} else {
-			return (true, nil, "Error: Cannot Connect")
+			return (true, "Error: Cannot Connect", nil)
 		}
 	}
 	
@@ -149,9 +152,9 @@ class IFTTT: IFTTT_GETTOKEN, Trigger, Remote_SingleDevice {
 	}
 	
 	private var privname: String? = nil;
-	var name: String? {
+	var name: String {
 		get {
-			return privname;
+			return privname ?? "";
 		}
 		
 		set(_name) {
@@ -172,6 +175,7 @@ class IFTTT: IFTTT_GETTOKEN, Trigger, Remote_SingleDevice {
 			return nil
 		}
 		connection = _connection
+		print("Using IFTTT Trigger")
 	}
 	
 	func get_info() -> (token: String, event: String) {

@@ -9,16 +9,6 @@
 import UIKit
 import SwiftyJSON
 
-enum DEBUG_STR {
-	case JSON
-	case TCP
-	case UIViewWelcome
-	case TokenUpdate
-	case DATA
-}
-
-let debug: [DEBUG_STR] = []
-
 // to use debug
 // if (debug_contains(type: .JSON)) {}
 
@@ -29,10 +19,6 @@ func debug_contains(type: DEBUG_STR) -> Bool {
 		}
 	}
 	return false
-}
-
-enum ERRMSG: String {
-	case token_expired = "Error: Token Expired!"
 }
 
 // Connection Protocols follow Connection
@@ -71,9 +57,9 @@ protocol SMARTDB: class {
 		get
 	}
 	// Save this object to file
-	func save_to_file(api: SMART, name: String) -> [String: Any]
+	func save_to_file(api: SMART) -> [String: Any]
 	// Load this object from file
-	func load_from_file(file: [String: Any]) -> (api: SMART?, name: String?)
+	func load_from_file(file: [String: Any]) -> SMART?
 }
 
 extension SMARTDB {
@@ -89,16 +75,15 @@ extension SMARTDB {
 }
 
 // Database class for protocols
-let protocols = proto_db()
 class proto_db {
 	
 	private var protos = [(db: SMARTDB, typeid: UInt)]()
 	
 	init() {
 		// Display Order
-		protos.append((db: IFTTT_PROTO() as SMARTDB, typeid: 2))
 		protos.append((db: TPLINK_PROTO_LOCAL() as SMARTDB, typeid: 0))
 		protos.append((db: TPLINK_PROTO_REMOTE() as SMARTDB, typeid: 1))
+		protos.append((db: IFTTT_PROTO() as SMARTDB, typeid: 2))
 		protos.append((db: WEB_GPIO_PROTO() as SMARTDB, typeid: 3))
 		protos.append((db: WEB_GET_PROTO() as SMARTDB, typeid: 4))
 	}
@@ -189,7 +174,7 @@ protocol GET_API {}
 // The login method is custom, just send raw strings and return full api object
 protocol CUSTOM_GETAPI: GET_API {
 	// Name can also be error message
-	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, new_api: SMART?, name: String?)
+	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, errstr: String, new_api: SMART?)
 }
 
 // This login uses Tokens/API Keys to login
@@ -229,7 +214,7 @@ protocol SMART {
 		get
 	}
 	
-	var name: String? {
+	var name: String {
 		get set
 	}
 }

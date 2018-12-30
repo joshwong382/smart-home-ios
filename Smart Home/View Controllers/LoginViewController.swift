@@ -84,13 +84,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		// Delegates and Tags for text field return
+
+		// Delegates and Tags for when UI Overrides return from Smart Class
 		username_field.delegate = self
 		username_field.tag = 0
 		pass_field.delegate = self
 		pass_field.tag = 1
 		
+		// Check UI Overrides
 		if (previousVC is DevicesVC) {
 			UIoverrides()
 		}
@@ -105,6 +106,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 			}
 		}
 		
+		// check what vendor name to display
 		if (previousVC is DevicesVC) {
 			if (smart_apitype != nil) {
 				login_lbl.text = smart_apitype!.type_name
@@ -140,7 +142,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 		checkEmpty()
 	}
 	
-	//MARK: - Controlling the Keyboard
+	// This func makes the "return" key work on the keyboard
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		if (textField == username_field) {
 			textField.resignFirstResponder()
@@ -175,8 +177,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 		}
 	}
 	
-
+	// main login function
 	@IBAction func login_pressed(_ sender: Any) {
+		
+		// sync labels to main thread interruptedly
+		func main_sync_err_lbl(label: UILabel, string: String?) {
+			if (Thread.isMainThread) { return }
+			DispatchQueue.main.sync {
+				label.loadingIndicator(false)
+				label.text = string
+				self.checkEmpty()
+			}
+		}
 		
 		view.endEditing(true)
 		
@@ -186,175 +198,194 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 			return
 		}
 		
-		// For any SmartVC including PlugVC
-		if let remote_api = smart_api as? TOKEN_LOGIN {
-			
-			// Attempt to Login
-			let response: String?
-			let error: Bool
-			(error, response) = remote_api.token_from_login(username: username_field.text!, password: pass_field.text!)
-			
-			if (response == nil) {
-				error_lbl.text = "Error: Cannot Connect"
-				return
-			}
-			
-			if (error) {
-				error_lbl.text = response
-				return
-			}
-			
-			dismissVC(token: response!)
-			return
-		}
+		error_lbl.text = ""
+		error_lbl.loadingIndicator(true)
+		login_btn.isEnabled = false
 		
-		// For DevicesVC
-		else if (smart_apitype != nil) {
-			
-			if let remote_apitype = smart_apitype!.obj_login as? TOKEN {
-				
-				let response: String?
+		let first_field = self.username_field.text
+		let second_field = self.pass_field.text
+		
+		DispatchQueue.global().async {
+		
+			// For any SmartVC including PlugVC
+			if let remote_api = self.smart_api as? TOKEN_LOGIN {
 				
 				// Attempt to Login
-				if let login_api = remote_apitype as? TOKEN_LOGIN {
-					
-					let error: Bool
-					(error, response) = login_api.token_from_login(username: username_field.text!, password: pass_field.text!)
-					
-					if (response == nil) {
-						error_lbl.text = "Error: Cannot Connect"
-						return
-					}
-					
-					if (error) {
-						error_lbl.text = response
-						return
-					}
-					
-				} else {
-					
-					let result = remote_apitype.check_token(token: pass_field.text!)
-					response = result.token
-					
-					if (response == nil) {
-						error_lbl.text = "Unknown Error: 1725"
-						return
-					}
-					
-					if (result.error) {
-						error_lbl.text = "Incorrect Token/API Key"
-						return
-					}
+				let response: String?
+				let error: Bool
+				(error, response) = remote_api.token_from_login(username: first_field!, password: second_field!)
+				
+				if (response == nil) {
+					main_sync_err_lbl(label: self.error_lbl, string: "Error: Cannot Connect")
+					return
 				}
 				
-				// Use Token to Get Devices
-				
-				// TOKEN_LOGIN_MULTIDEVICE
-				if let multidevice_api = remote_apitype as? TOKEN_MULTIDEVICE {
-					let result = multidevice_api.get_devices()
-					if (result.error == false && result.devices != nil) {
-						
-						// Get devices
-						let device_list = result.devices!
-						
-						// If only one device, use that device
-						switch device_list.count {
-							
-						case 0:
-							error_lbl.text = "No devices are connected to your account"
-							return
-						
-						default:
-							// Create api object and dismiss
-							
-							// Instantiate apis array
-							var apis = [(api: SMART, name: String)]()
-							
-							// For each device in account
-							for device in device_list {
-								
-								// Final check for api type
-								if let api_type = (smart_apitype!.obj_type.self as? (Remote_MultiDevice.Type)) {
-									// Create Object
-									let api = api_type.init(_token: response!, _url: device.api_url, _devid: device.device_id)
-									
-									if (debug_contains(type: .TokenUpdate)) {
-										print("Token: " + response!)
-										print("Domain: " + device.api_url)
-										print("Device ID: " + device.device_id)
-									}
-									
-									// Add to array
-									apis.append((api: (api as! SMART), name: device.alias))
-								}
-							}
-							
-							// Send data back to previousVC
-							if let devicevc = previousVC as? DevicesVC {
-								for api in apis {
-									devicevc.addAPI(newly_added_api: (obj: api.api, customized_name: api.name))
-								}
-								dismissVC()
-							} else {
-								error_lbl.text = "Error: Unable to add device to list"
-							}
-							return
-						
-						}
-					} else {
-						error_lbl.text = "Error: Unable to find devices"
-						return
-					}
-					
-				// TOKEN_LOGIN SINGLEDEVICE
-				} else if let singledevice_api = remote_apitype as? TOKEN_SINGLEDEVICE {
-					
-					// Final check type
-					if let api_type = (smart_apitype!.obj_type.self as? (Remote_SingleDevice.Type)) {
-						
-						// Get info from device
-						let device = singledevice_api.getDevice()
-						let api = api_type.init(_token: response!, _url: device.url)
-						if let devicevc = previousVC as? DevicesVC {
-							devicevc.addAPI(newly_added_api: (obj: api as! SMART, customized_name: device.name))
-							dismissVC()
-						} else {
-							error_lbl.text = "Error: Unable to add device to list"
-						}
-						return
-					}
-					
+				if (error) {
+					main_sync_err_lbl(label: self.error_lbl, string: response)
+					return
+				}
+				DispatchQueue.main.sync {
+					self.dismissVC(token: response!)
 				}
 				return
 			}
 			
-			// Use a custom method for getting API
-			else if let apitype = smart_apitype!.obj_login as? CUSTOM_GETAPI {
-				let result = apitype.getAPI(firstText: username_field.text, secondText: pass_field.text)
+			// For DevicesVC
+			else if (self.smart_apitype != nil) {
 				
-				if (result.new_api == nil || result.name == nil || result.error) {
-					if (result.name == nil || result.name == "") {
-						error_lbl.text = "Error: Unable to Connect"
+				if let remote_apitype = self.smart_apitype!.obj_login as? TOKEN {
+					
+					let response: String?
+					
+					// Attempt to Login
+					if let login_api = remote_apitype as? TOKEN_LOGIN {
+						
+						let error: Bool
+						(error, response) = login_api.token_from_login(username: first_field!, password: second_field!)
+						
+						if (response == nil) {
+							main_sync_err_lbl(label: self.error_lbl, string: "Error: Cannot Connect")
+							return
+						}
+						
+						if (error) {
+							main_sync_err_lbl(label: self.error_lbl, string: response)
+							return
+						}
+						
 					} else {
-						error_lbl.text = result.name
+						
+						let result = remote_apitype.check_token(token: second_field!)
+						response = result.token
+						
+						if (response == nil) {
+							main_sync_err_lbl(label: self.error_lbl, string: "Unknown Error: 1725")
+							return
+						}
+						
+						if (result.error) {
+							main_sync_err_lbl(label: self.error_lbl, string: "Incorrect Token/API Key")
+							return
+						}
+					}
+					
+					// Use Token to Get Devices
+					
+					// TOKEN_LOGIN_MULTIDEVICE
+					if let multidevice_api = remote_apitype as? TOKEN_MULTIDEVICE {
+						let result = multidevice_api.get_devices()
+						if (result.error == false && result.devices != nil) {
+							
+							// Get devices
+							let device_list = result.devices!
+							
+							// If only one device, use that device
+							switch device_list.count {
+								
+							case 0:
+								main_sync_err_lbl(label: self.error_lbl, string: "No devices are connected to your account")
+								return
+							
+							default:
+								// Create api object and dismiss
+								
+								// Instantiate apis array
+								var apis = [SMART]()
+								
+								// For each device in account
+								for device in device_list {
+									
+									// Final check for api type
+									if let api_type = (self.smart_apitype!.obj_type.self as? (Remote_MultiDevice.Type)) {
+										// Create Object
+										var api = api_type.init(_token: response!, _url: device.api_url, _devid: device.device_id) as! SMART
+										api.name = device.alias
+										
+										if (debug_contains(type: .TokenUpdate)) {
+											print("Token: " + response!)
+											print("Domain: " + device.api_url)
+											print("Device ID: " + device.device_id)
+										}
+										
+										// Add to array
+										apis.append(api)
+									}
+								}
+								
+								// Send data back to previousVC
+								if let devicevc = self.previousVC as? DevicesVC {
+									DispatchQueue.main.sync {
+										for api in apis {
+											devicevc.addAPI(newly_added_api: api)
+										}
+										self.dismissVC()
+									}
+								} else {
+									main_sync_err_lbl(label: self.error_lbl, string: "Error: Unable to add device to list")
+								}
+								return
+							
+							}
+						} else {
+							main_sync_err_lbl(label: self.error_lbl, string: "Error: Unable to find devices")
+							return
+						}
+						
+					// TOKEN_LOGIN SINGLEDEVICE
+					} else if let singledevice_api = remote_apitype as? TOKEN_SINGLEDEVICE {
+						
+						// Final check type
+						if let api_type = (self.smart_apitype!.obj_type.self as? (Remote_SingleDevice.Type)) {
+							
+							// Get info from device
+							let device = singledevice_api.getDevice()
+							var api = api_type.init(_token: response!, _url: device.url) as! SMART
+							if let devicevc = self.previousVC as? DevicesVC {
+								api.name = device.name
+								devicevc.addAPI(newly_added_api: api)
+								DispatchQueue.main.sync {
+									self.dismissVC()
+								}
+							} else {
+								main_sync_err_lbl(label: self.error_lbl, string: "Error: Unable to add device to list")
+							}
+							return
+						}
+						
 					}
 					return
 				}
+				
+				// Use a custom method for getting API
+				else if let apitype = self.smart_apitype!.obj_login as? CUSTOM_GETAPI {
+					let result = apitype.getAPI(firstText: first_field, secondText: second_field)
+					
+					if (result.new_api == nil || result.error) {
+						if (result.errstr == "") {
+							main_sync_err_lbl(label: self.error_lbl, string: "Error: Unable to Connect")
+						} else {
+							main_sync_err_lbl(label: self.error_lbl, string: result.errstr)
+						}
+						return
+					}
 
-				if let devicevc = previousVC as? DevicesVC {
-					devicevc.addAPI(newly_added_api: (obj: result.new_api!, customized_name: result.name!))
-					dismissVC()
-				} else {
-					error_lbl.text = "Error: Unable to add device to list"
+					if let devicevc = self.previousVC as? DevicesVC {
+						
+						devicevc.addAPI(newly_added_api: result.new_api!)
+						DispatchQueue.main.sync {
+							self.dismissVC()
+						}
+					} else {
+						main_sync_err_lbl(label: self.error_lbl, string: "Error: Unable to add device to list")
+					}
+					return
 				}
-				return
 			}
+			
+			// When all fails
+			main_sync_err_lbl(label: self.error_lbl, string: "Error: Feature Unavailable")
 		}
-		
-		// When all fails
-		error_lbl.text = "Error: Feature Unavailable"
 	}
-	
 	
 	/*
     // MARK: - Navigation

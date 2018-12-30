@@ -39,14 +39,14 @@ class WEB_GPIO_PROTO: SMARTDB {
 		return WEB_GPIO_GETINFO()
 	}
 	
-	func save_to_file(api: SMART, name: String) -> [String : Any] {
+	func save_to_file(api: SMART) -> [String : Any] {
 		
 		if let web_gpio_api = api as? WEB_GPIO {
 			
 			let url = web_gpio_api.get_info()
 			let json: [String: Any] = [
 				"type_id": type(of: self).type_id,
-				"name": name,
+				"name": api.name,
 				"url": url.absoluteString
 			]
 			return json
@@ -54,25 +54,25 @@ class WEB_GPIO_PROTO: SMARTDB {
 		return [:]
 	}
 	
-	func load_from_file(file: [String : Any]) -> (api: SMART?, name: String?) {
+	func load_from_file(file: [String : Any]) -> SMART? {
 		
 		let json = file as? [String: String]
 		
 		if (json == nil) {
 			print("Load From File Failed")
-			return (nil, nil)
+			return nil
 		}
 		
 		if let url = URL(string: json!["url"]!) {
 			if (json!["name"]!.count > 0) {
 				let api = WEB_GPIO(_url: url)
 				api.name = json!["name"]!
-				return (api, api.name)
+				return api
 			}
 		}
 
 		print("Load From File Failed")
-		return (nil, nil)
+		return nil
 	}
 	
 }
@@ -81,10 +81,10 @@ class WEB_GPIO_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 	
 	init() {}
 	
-	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, new_api: SMART?, name: String?) {
+	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, errstr: String, new_api: SMART?) {
 		let url = URL(string: secondText!)
 		if (url == nil) {
-			return (true, nil, "Invalid URL")
+			return (true, "Invalid URL", nil)
 		}
 		
 		// Check URL Response
@@ -96,13 +96,17 @@ class WEB_GPIO_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		}
 		
 		if (a.response == nil) {
-			return (true, nil, "Error: Unable to Connect")
+			return (true, "Error: Unable to Connect", nil)
 		}
 		let json = JSON(parseJSON: a.response!)
 		if (json["test"] == "success") {
-			return (false, WEB_GPIO(_token: "", _url: url!.absoluteString), firstText!)
+			let api = WEB_GPIO(_token: "", _url: url!.absoluteString)
+			if (api != nil) {
+				api!.name = firstText!
+			}
+			return (false, "", api)
 		}
-		return (true, nil, "Error: Invalid Response")
+		return (true, "Error: Invalid Response", nil)
 
 	}
 	
@@ -119,9 +123,9 @@ class WEB_GPIO: WEB_GPIO_GETINFO, Switch, Remote_SingleDevice {
 	var connection: JSON_CONN?
 	
 	private var privname: String? = nil;
-	var name: String? {
+	var name: String {
 		get {
-			return privname;
+			return privname ?? "";
 		}
 		
 		set(_name) {
@@ -142,6 +146,7 @@ class WEB_GPIO: WEB_GPIO_GETINFO, Switch, Remote_SingleDevice {
 		if (connection == nil) {
 			return nil
 		}
+		print("Using HTTP POST Switch")
 	}
 	
 	required init(_url: URL) {

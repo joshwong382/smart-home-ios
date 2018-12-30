@@ -287,17 +287,17 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 		//local_remote_SW.isEnabled = false
 	}
 	
-	func displayError(custom_error: ERRMSG? = nil) {
+	func displayError(custom_error: String? = nil) {
 		green_light.isHidden = true
 		red_light.isHidden = true
 		
 		if (custom_error != nil) {
 			led_sw.isHidden = true
 			led_lbl.isHidden = true
-			uptime_lbl.text = custom_error!.rawValue
+			uptime_lbl.text = custom_error!
 			
 			// Update token!
-			if (custom_error == .token_expired) {
+			if (custom_error == "Error: Token Expired!") {
 				token_updating = true
 				DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
 					self.performSegue(withIdentifier: "LoginSegue", sender: self)
@@ -387,7 +387,8 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 				// If REMOTE, check token expiry
 				if let api_remote = self.api as? Remote_TokenHasExpiry {
 					if (api_remote.checkExpiry()) {
-						self.displayError(custom_error: .token_expired)
+						// careful: custom error "Error: Token Expired!" is linked to the displayError function in some way
+						self.displayError(custom_error: "Error: Token Expired!")
 						self.updating_common_states = false
 						return
 					}
@@ -434,36 +435,5 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 		if (state == .none) {
 			displayError()
 		}
-	}
-}
-
-// Useful Functions
-
-func twoDigitInt(int: Int) -> String {
-	if (int < 10) { return ("0" + String(int)) }
-	else { return String(int) }
-}
-
-func secToTime (seconds : Int) -> (Int, Int, Int) {
-	return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
-}
-
-// Extensions
-
-extension StringProtocol {
-	var ascii: [UInt32] {
-		return unicodeScalars.filter{$0.isASCII}.map{$0.value}
-	}
-}
-extension Character {
-	var ascii: UInt32? {
-		return String(self).unicodeScalars.filter{$0.isASCII}.first?.value
-	}
-}
-
-extension String {
-	func toJSON() -> Any? {
-		guard let data = self.data(using: .utf8, allowLossyConversion: false) else { return nil }
-		return try? JSONSerialization.jsonObject(with: data, options: .mutableContainers)
 	}
 }

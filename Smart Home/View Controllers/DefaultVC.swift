@@ -13,6 +13,8 @@ import Reachability
 class UIViewWelcome: ReachabilityTableVCDelegate {
 	
 	private var TCP_state_queue = [(cell: UITableViewCell, api: SMART, indexPath: IndexPath)]()
+	private let TCP_state_dispatch = DispatchQueue(label: "tcp_state_async_queue")
+	private let reload_semaphore = DispatchSemaphore(value: 1)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -100,14 +102,13 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		}
 		
 		// Each cell's text to be value
-		cell!.textLabel?.text = info.name
+		cell!.textLabel?.text = info.api.name
 		cell!.textLabel?.numberOfLines = 0
 		cell!.textLabel?.lineBreakMode = .byTruncatingTail
 		
 		// Check Current State for Plug
 		if (info.api is Plug || info.api is Switch) {
 			TCP_state_queue.append((cell: cell!, api: info.api, indexPath: indexPath))
-			print(TCP_state_queue.count)
 		}
 		
 		// No need to check state for trigger
@@ -135,24 +136,12 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		if (editingStyle == .delete) {
 			// Actually delete the cell
 			api_data.delete(index: indexPath.row)
+			reload_semaphore.wait()
 			reloadData()
+			reload_semaphore.signal()
 		}
 	}
-	
-	func displayOffline(cell: UITableViewCell) {
-		var offline_lbl: UILabel? = nil
-		if let cell_offline = cell.accessoryView as? UILabel {
-			cell_offline.textColor = .red
-			cell_offline.text = "Offline"
-		} else {
-			// Cell accessoryView to be a text
-			offline_lbl = UILabel(frame: CGRect(x: 1, y: 1, width: 60, height: 20))
-			offline_lbl!.textColor = .red
-			offline_lbl!.text = "Offline"
-			cell.accessoryView = offline_lbl
-		}
-	}
-	
+
 	// When user clicked on a table cell
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
@@ -166,6 +155,7 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	
 	// When user moves elements around
 	override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+		api_data.move(prevIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
 	}
 	
 	@objc func toggle(_ sender: UISwitch) {
@@ -207,10 +197,10 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		self.performSegue(withIdentifier: "Table2DeviceSegue", sender: self)
 	}
 	
-	func add_smartobj(obj: SMART, objname: String) {
+	func add_smartobj(obj: SMART) {
 		
 		// append table list
-		_ = api_data.add(name: objname, api: obj)
+		_ = api_data.add(api: obj)
 		
 		// reload data
 		reloadData()
@@ -221,7 +211,22 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		if (debug_contains(type: .UIViewWelcome)) {
 			print("reloading...")
 		}
+		
 		tableView.reloadData()
+	}
+	
+	func displayOffline(cell: UITableViewCell) {
+		var offline_lbl: UILabel? = nil
+		if let cell_offline = cell.accessoryView as? UILabel {
+			cell_offline.textColor = .red
+			cell_offline.text = "Offline"
+		} else {
+			// Cell accessoryView to be a text
+			offline_lbl = UILabel(frame: CGRect(x: 1, y: 1, width: 60, height: 20))
+			offline_lbl!.textColor = .red
+			offline_lbl!.text = "Offline"
+			cell.accessoryView = offline_lbl
+		}
 	}
 	
 	/*
@@ -230,12 +235,49 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 
 	*/
 	
+	// should only be called in viewDidLoad
 	private func threaded_check_relay_state() {
-		DispatchQueue.global().async {
+		
+		TCP_state_dispatch.async {
 			while (true) {
-				if (!self.TCP_state_queue.isEmpty) {
+				
+				// Manual Refresh
+				while (!self.TCP_state_queue.isEmpty) {
 					let info = self.TCP_state_queue.removeFirst()
-					self.accessoryViewCreation(cell: info.cell, api: info.api, indexPath: info.indexPath)
+					self.accessoryViewCreation(cell: info.cell, api: info.api, index: info.indexPath.row, background: false)
+				}
+				
+				// Automatic Refresh every 5 seconds
+				var cells: [UITableViewCell]?
+				DispatchQueue.main.sync {
+					cells = self.tableView.visibleCells
+				}
+				
+				if (cells == nil) { continue }
+				if (cells!.count == 0) { continue }
+				var cell_index = 0
+				
+				let prev_time = DispatchTime.now().uptimeNanoseconds
+				while (self.TCP_state_queue.isEmpty && cell_index < cells!.count) {
+					
+					if (DispatchTime.now().uptimeNanoseconds - prev_time >= UInt64(5*1e9)) {
+						self.reload_semaphore.wait()
+						
+						// get every cell
+						let cell = cells![cell_index]
+						
+						// check cell is not offline (if we refresh this it might take a long time)
+						if (cell.api_offline) {
+							continue
+						}
+						
+						// get api and update view
+						let api = api_data.get(index: cell_index).api
+						self.accessoryViewCreation(cell: cell, api: api, index: cell_index, background: true)
+						self.reload_semaphore.signal()
+						cell_index += 1
+					}
+
 				}
 			}
 		}
@@ -255,7 +297,13 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	}
 	
 	// Run the check relay state with all the necessary UI changes
-	private func accessoryViewCreation(cell: UITableViewCell, api: SMART, indexPath: IndexPath) {
+	private func accessoryViewCreation(cell: UITableViewCell, api: SMART, index: Int, background: Bool) {
+		
+		// this should not be run on the main thread
+		if (Thread.isMainThread) {
+			print("Error: Cannot be Run in Main Thread")
+			return
+		}
 		
 		// Create on-off switch
 		var on_off_sw: UISwitch? = nil
@@ -282,13 +330,13 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 				
 				if let cell_sw = cell.accessoryView as? UISwitch {
 					// Don't recreate element
-					cell_sw.isOn = relayState!
+					cell_sw.setOn(relayState!, animated: true)
 				} else {
 					// Cell accessoryView to be a On Off Switch
 					on_off_sw = UISwitch(frame: CGRect(x: 1, y: 1, width: 20, height: 20))
-					on_off_sw!.isOn = relayState!
+					on_off_sw!.setOn(relayState!, animated: false)
 					// Set switch tag to index
-					on_off_sw!.tag = indexPath.row
+					on_off_sw!.tag = index
 					// Set switch action to toggle()
 					on_off_sw!.addTarget(self, action: #selector(self.toggle(_:)), for: .valueChanged)
 					cell.accessoryView = on_off_sw

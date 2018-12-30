@@ -125,7 +125,7 @@ class JSON_CONN: Connection {
 			(data, response, error) in
 			
 			guard let data = data, let _:URLResponse = response, error == nil else {
-				print("error")
+				if (debug.contains(.JSON)) { print("doHTTP error") }
 				return
 			}
 			
@@ -200,7 +200,7 @@ class JSON_CONN: Connection {
 			(data, response, error) in
 			
 			guard let data = data, let _:URLResponse = response, error == nil else {
-				print("error")
+				if (debug.contains(.JSON)) { print("POST SubFunc error") }
 				return
 			}
 			

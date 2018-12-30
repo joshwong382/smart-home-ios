@@ -31,14 +31,14 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 		}
 	}
 	
-	func save_to_file(api: SMART, name: String) -> [String: Any] {
+	func save_to_file(api: SMART) -> [String: Any] {
 		// Local
 		if let aapi = api as? TPLINK_LOCAL {
 			let ip = aapi.connection.returnIP()!
 			let port = aapi.connection.returnPort()!
 			let json: [String: Any] = [
 				"type_id": type(of: self).type_id,
-				"name": name,
+				"name": api.name,
 				"type": "LOCAL",
 				"info": [
 					"ip": ip,
@@ -50,7 +50,7 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 		return [:]
 	}
 	
-	func load_from_file(file: [String : Any]) -> (api: SMART?, name: String?) {
+	func load_from_file(file: [String : Any]) -> SMART? {
 		
 		if (file["type"] as? String == "LOCAL") {
 			if let info = file["info"] as? [String: String] {
@@ -58,23 +58,23 @@ class TPLINK_PROTO_LOCAL: SMARTDB {
 				let port = info["port"]
 				if (ip == nil || port == nil) {
 					print("Load From File Failed")
-					return (nil, nil)
+					return nil
 				}
 				
 				let api = TPLINK_LOCAL(ip: ip! + ":" + port!)
 				let name = file["name"] as? String
 				if (name == nil) {
 					print("Load From File Failed")
-					return (nil, nil)
+					return nil
 				}
 				if (api != nil) {
-					api!.name = name
+					api!.name = name ?? ""
 				}
-				return (api, name)
+				return api
 			}
 		}
 		print("Load From File Failed")
-		return (nil, nil)
+		return nil
 	}
 }
 
@@ -86,13 +86,13 @@ class TPLINK_LOCAL_LOGIN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 		secondField.isHidden = true
 	}
 	
-	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, new_api: SMART?, name: String?) {
+	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, errstr: String, new_api: SMART?) {
 		if (firstText == nil) {
-			return (true, nil, nil)
+			return (true, "Please Enter a valid domain/IP", nil)
 		}
 		let api = TPLINK_LOCAL(ip: firstText!)
 		if (api == nil) {
-			return (true, nil, nil)
+			return (true, "Unknown Error Occured", nil)
 		}
 		
 		var i = 0
@@ -109,7 +109,8 @@ class TPLINK_LOCAL_LOGIN: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 			}
 			i += 1
 		}
-		return (false, api, name)
+		api!.name = name ?? ""
+		return (false, "", api)
 	}
 	
 }
@@ -119,9 +120,9 @@ class TPLINK_LOCAL: Plug, Local {
 	var connection: IP_CONN
 	
 	private var privname: String? = nil;
-	var name: String? {
+	var name: String {
 		get {
-			return privname;
+			return privname ?? "";
 		}
 		
 		set(_name) {

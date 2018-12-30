@@ -31,14 +31,14 @@ class WEB_GET_PROTO: SMARTDB {
 		return WEB_GET_GETINFO()
 	}
 	
-	func save_to_file(api: SMART, name: String) -> [String : Any] {
+	func save_to_file(api: SMART) -> [String : Any] {
 		
 		if let web_get_api = api as? WEB_GET {
 			
 			let url = web_get_api.get_info()
 			let json: [String: Any] = [
 				"type_id": type(of: self).type_id,
-				"name": name,
+				"name": api.name,
 				"url": url.absoluteString
 			]
 			return json
@@ -46,19 +46,19 @@ class WEB_GET_PROTO: SMARTDB {
 		return [:]
 	}
 	
-	func load_from_file(file: [String : Any]) -> (api: SMART?, name: String?) {
+	func load_from_file(file: [String : Any]) -> SMART? {
 		
 		let url_string = file["url"] as? String
-		if (url_string == nil) { print("Load From File Failed"); return (nil, nil) }
+		if (url_string == nil) { print("Load From File Failed"); return nil }
 		
 		let url = URL(string: url_string!)
-		if (url == nil) { print("Load From File Failed"); return (nil, nil) }
+		if (url == nil) { print("Load From File Failed"); return nil }
 		
 		let name = file["name"] as? String
 		
 		let api = WEB_GET(url: url!)
-		api.name = name
-		return (api, name)
+		api.name = name ?? ""
+		return api
 	}
 	
 }
@@ -67,17 +67,22 @@ class WEB_GET_GETINFO: CUSTOM_GETAPI, LOGIN_UIOVERRIDES {
 	
 	init() {}
 	
-	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, new_api: SMART?, name: String?) {
-		if (firstText == nil || secondText == nil) { return (true, nil, nil) }
+	func getAPI(firstText: String?, secondText: String?) -> (error: Bool, errstr: String, new_api: SMART?) {
+		if (firstText == nil || secondText == nil) { return (true, "Please do not hack your way through.", nil) }
+		
+		if (!(secondText!.hasPrefix("http://") || secondText!.hasPrefix("https://"))) {
+			return (true, "Please start your URL with http(s)://", nil)
+		}
 		
 		let url = URL(string: secondText!)
-		if (url == nil) { return (true, nil, "Invalid URL") }
+		if (url == nil) { return (true, "Invalid URL", nil) }
 		
 		let api = WEB_GET(url: url!)
 		let pwr = api.getPowerState()
-		if (pwr.pwr == nil) { return (true, nil, "Protocol Incorrect\n(Maybe you entered a wrong URL?)") }
+		if (pwr.pwr == nil) { return (true, "Protocol Incorrect\n(Maybe you entered a wrong URL?)", nil) }
 		
-		return (false, api, firstText!)
+		api.name = firstText!
+		return (false, "", api)
 	}
 	
 	func field_overrides(firstField: inout UITextField, secondField: inout UITextField, fieldsRequirementLevel: inout UInt) {
@@ -113,9 +118,9 @@ class WEB_GET: WEB_GET_GETINFO, Switch {
 	}
 	
 	private var privname: String? = nil
-	var name: String? {
+	var name: String {
 		get {
-			return privname;
+			return privname ?? "";
 		}
 		
 		set(_name) {
@@ -142,6 +147,7 @@ class WEB_GET: WEB_GET_GETINFO, Switch {
 		} else {
 			base_url = url
 		}
+		print("Using HTTP GET Switch")
 	}
 	
 	func get_info() -> URL {

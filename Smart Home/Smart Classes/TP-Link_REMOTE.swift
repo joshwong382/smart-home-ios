@@ -34,14 +34,14 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 		}
 	}
 	
-	func save_to_file(api: SMART, name: String) -> [String: Any] {
+	func save_to_file(api: SMART) -> [String: Any] {
 		
 		// If TPLINK is Remote
 		if let aapi = api as? TPLINK_REMOTE {
 			let info = aapi.get_info()
 			let json: [String: Any] = [
 				"type_id": type(of: self).type_id,
-				"name": name,
+				"name": api.name,
 				"type": "REMOTE",
 				"info": [
 					"token": info.token,
@@ -55,7 +55,7 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 		return [:]
 	}
 	
-	func load_from_file(file: [String: Any]) -> (api: SMART?, name: String?) {
+	func load_from_file(file: [String: Any]) -> SMART? {
 		
 		if (file["type"] as? String == "REMOTE") {
 			let info = file["info"] as? [String : Any]
@@ -65,24 +65,24 @@ class TPLINK_PROTO_REMOTE: SMARTDB {
 				let devid = info!["devid"] as? String
 				if (token == nil || domain == nil || devid == nil) {
 					print("Load From File Failed")
-					return (nil, nil)
+					return (nil)
 				}
 				
 				let api = TPLINK_REMOTE(_token: token!, _url: domain!, _devid: devid!)
 				let name = file["name"] as? String
 				if (name == nil) {
 					print("Load From File Failed")
-					return (nil, nil)
+					return (nil)
 				}
 				if (api != nil) {
-					api!.name = name
+					api!.name = name!
 				}
-				return (api, name)
+				return (api)
 			}
 		}
 		
 		print("Load From File Failed")
-		return (nil, nil)
+		return (nil)
 	}
 	
 }
@@ -201,9 +201,9 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 	}
 	
 	private var privname: String? = nil;
-	var name: String? {
+	var name: String {
 		get {
-			return privname;
+			return privname ?? "";
 		}
 		
 		set(_name) {

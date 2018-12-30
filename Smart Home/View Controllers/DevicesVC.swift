@@ -94,9 +94,9 @@ class DevicesVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		dismissVC()
 	}
 	
-	func addAPI(newly_added_api: (obj: SMART, customized_name: String)) {
+	func addAPI(newly_added_api: SMART) {
 		if let sourceVC = previousVC as? UIViewWelcome {
-			sourceVC.add_smartobj(obj: newly_added_api.obj, objname: newly_added_api.customized_name)
+			sourceVC.add_smartobj(obj: newly_added_api)
 			markForDismiss = true
 		}
 	}
