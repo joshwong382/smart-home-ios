@@ -12,7 +12,7 @@ import SwiftyJSON
 
 // GLOBALS
 let protocols = proto_db()
-let debug: [DEBUG_STR] = []
+let debug: [DEBUG_STR] = [.JSON]
 
 // Global Extensions
 enum DEBUG_STR {

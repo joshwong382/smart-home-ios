@@ -377,7 +377,7 @@ class PlugViewController: ReachabilityVCDelegate, UITextFieldDelegate, UIPopover
 		serialQueue.async {
 
 			var cancelled: Bool
-			(cancelled, self.relay_state, self.led_state) = self.api!.getCommonStates()
+			(cancelled, self.relay_state, self.led_state) = self.api!.getCommonStates(timeout: 0)
 			
 			DispatchQueue.main.async {
 

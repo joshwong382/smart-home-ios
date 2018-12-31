@@ -275,7 +275,10 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 	// Update States
 	
 	// get state of power and status LED
-	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
+	func getCommonStates(timeout: UInt = 0) -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
+		if (timeout != 0) {
+			print("Unable to provide timeout")
+		}
 		
 		if (token_expire) { return (false, nil, nil) }
 		
@@ -328,8 +331,8 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 	}
 	
 	// Stub to getCommonStates()
-	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
-		let result = getCommonStates()
+	func getPowerState(timeout: UInt = 0) -> (cancelled: Bool, pwr: Bool?) {
+		let result = getCommonStates(timeout: timeout)
 		return (result.cancelled, result.pwr)
 	}
 	
@@ -351,8 +354,12 @@ class TPLINK_REMOTE: TPLINK_REMOTE_LOGIN, Remote_TokenHasExpiry, Remote_MultiDev
 		return (false, h,m,s)
 	}
 	
-	func getSpecificState(match: String) -> (cancelled: Bool, state: String?) {
+	func getSpecificState(match: String, timeout: UInt = 0) -> (cancelled: Bool, state: String?) {
 		if (token_expire) { return (false, nil) }
+		
+		if (timeout != 0) {
+			print("Unable to provide timeout")
+		}
 		
 		// Get Plug Info
 		let response = connection!.send_string(json: getAPICalls(api: API.INFO))

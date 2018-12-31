@@ -207,21 +207,28 @@ protocol SMART {
 	}
 }
 
-protocol PWM_DEV: SMART {
-	func getState() -> (cancelled: Bool, state: Int?)
-	func changeState(state: Int) -> (cancelled: Bool, success: Bool?)
+protocol MULTI_SMART: SMART {
+	
+	// devices: identifier - NAME
+	var devices: [String: String] {
+		get set
+	}
 }
 
 protocol Switch: SMART { 
 	
+	// A simple Switch Protocol
+	
 	// Get State
-	func getPowerState() -> (cancelled: Bool, pwr: Bool?)
+	func getPowerState(timeout: UInt) -> (cancelled: Bool, pwr: Bool?)
 	
 	// Change State
 	func changeRelayState(state: Bool) -> (cancelled: Bool, success: Bool?)
 }
 
 protocol Plug: Switch {
+	
+	// A more complicated Switch Protocol
 	
 	var has_led: Bool {
 		get
@@ -230,14 +237,14 @@ protocol Plug: Switch {
 	// get unit turned on time
 	func getUpTime() -> (cancelled: Bool, hour: Int?, min: Int?, sec: Int?)
 	
-	// get another states (see SMART protocol)
-	func getSpecificState(match: String) -> (cancelled: Bool, state: String?)
+	// get another states such as name
+	func getSpecificState(match: String, timeout: UInt) -> (cancelled: Bool, state: String?)
 	
 	// Change State (see Switch protocol)
 	//func changeRelayState(state: Bool) -> (cancelled: Bool, success: Bool?)
 	
 	// get state of power and status LED
-	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?)
+	func getCommonStates(timeout: UInt) -> (cancelled: Bool, pwr: Bool?, led: Bool?)
 	
 	// change state of status LED
 	func changeLEDState(state: Bool) -> (cancelled: Bool, success: Bool?)
@@ -245,7 +252,35 @@ protocol Plug: Switch {
 }
 
 protocol Trigger: SMART {
+	
+	// A trigger without a state to be queried
+	
 	func run() -> (cancelled: Bool, success: Bool?)
+}
+
+protocol SingleSensor: SMART {
+	
+	// One simple sensor reading
+	
+	func getData() -> String?
+}
+
+protocol SensorEditable: SMART {
+	
+	// This adds to the sensor category, cannot be multi-smart
+	func updateData(data: String) -> Bool
+}
+
+protocol BundleSensors: MULTI_SMART {
+	
+	// Multiple sensor readings
+	
+	// Use LOGIN class to add multiple devices
+	
+	// might need to do some work on the tableView to make this happen
+	
+	func getDevices() -> (devices: [String], error: String?)
+	func getDataAll() -> (data: [String: String], error: String?)
 }
 
 /****************************

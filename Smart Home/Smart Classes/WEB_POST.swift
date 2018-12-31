@@ -157,7 +157,10 @@ class WEB_GPIO: WEB_GPIO_GETINFO, Switch, Remote_SingleDevice {
 		return connection!.getURL()
 	}
 	
-	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
+	func getPowerState(timeout: UInt = 0) -> (cancelled: Bool, pwr: Bool?) {
+		if (timeout != 0) {
+			print("Unable to provide timeout.")
+		}
 		let power = connection!.send_string(json: "{\"command\":\"status\"}")
 		
 		if (power.cancelled) {

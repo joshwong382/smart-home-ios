@@ -15,16 +15,19 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	private var TCP_state_queue = [(cell: UITableViewCell, api: SMART, indexPath: IndexPath)]()
 	private let TCP_state_dispatch = DispatchQueue(label: "tcp_state_async_queue")
 	private let reload_semaphore = DispatchSemaphore(value: 1)
+	private var add_btn: UIBarButtonItem? = nil
+	private var settings_btn : UIBarButtonItem? = nil
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		// Edit Button
-		let edit_btn = UIBarButtonItem(title: "Edit", style: UIBarButtonItem.Style.plain, target: self, action: #selector(edit(_:)))
+		let edit_btn = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(edit(_:)))
 		navigationItem.leftBarButtonItem = edit_btn
 		
 		// Add Button
-		let add_btn = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(create_smartobj(_:)))
+		add_btn = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(create_smartobj(_:)))
+		settings_btn = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(create_smartobj(_:)))
 		navigationItem.rightBarButtonItem = add_btn
 
 		// Table Subview is refresh
@@ -184,9 +187,11 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		if(self.tableView.isEditing) {
 			self.tableView.setEditing(false, animated: true)
 			self.navigationItem.leftBarButtonItem?.title = "Edit"
+			self.navigationItem.rightBarButtonItem = add_btn
 		} else {
 			self.tableView.setEditing(true, animated: true)
 			self.navigationItem.leftBarButtonItem?.title = "Done"
+			self.navigationItem.rightBarButtonItem = settings_btn
 		}
 		
 	}
@@ -212,8 +217,15 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 			print("reloading...")
 		}
 		
-		tableView.reloadData()
+		if (Thread.isMainThread) {
+			tableView.reloadData()
+		} else {
+			DispatchQueue.main.async {
+				self.tableView.reloadData()
+			}
+		}
 	}
+
 	
 	func displayOffline(cell: UITableViewCell) {
 		var offline_lbl: UILabel? = nil
@@ -257,8 +269,14 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 				if (cells!.count == 0) { continue }
 				var cell_index = 0
 				
+				// Only background reload if ViewController is visible
+				var vc_visible: Bool? = true
+				DispatchQueue.main.async {
+					vc_visible = self.isViewLoaded && (self.view!.window != nil)
+				}
+				
 				let prev_time = DispatchTime.now().uptimeNanoseconds
-				while (self.TCP_state_queue.isEmpty && cell_index < cells!.count) {
+				while (vc_visible! && self.TCP_state_queue.isEmpty && cell_index < cells!.count) {
 					
 					if (DispatchTime.now().uptimeNanoseconds - prev_time >= UInt64(5*1e9)) {
 						self.reload_semaphore.wait()
@@ -276,8 +294,14 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 						self.accessoryViewCreation(cell: cell, api: api, index: cell_index, background: true)
 						self.reload_semaphore.signal()
 						cell_index += 1
+						
+						DispatchQueue.main.async {
+							vc_visible = self.isViewLoaded && (self.view!.window != nil)
+						}
+						if (!vc_visible!) {
+							print("Background Reload Suspended")
+						}
 					}
-
 				}
 			}
 		}
@@ -285,12 +309,12 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	
 	private func checkRelayState(api: SMART) -> Bool? {
 		if let PlugAPI = api as? Plug {
-			let result = PlugAPI.getCommonStates()
+			let result = PlugAPI.getCommonStates(timeout: 0)
 			return result.pwr
 		}
 		
 		if let SwitchAPI = api as? Switch {
-			let result = SwitchAPI.getPowerState()
+			let result = SwitchAPI.getPowerState(timeout: 3)
 			return result.pwr
 		}
 		return nil

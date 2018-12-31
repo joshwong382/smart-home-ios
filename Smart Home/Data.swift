@@ -144,17 +144,24 @@ class DataManager {
 	func sync_from_tableList_to_storage(fromIndex: Int = 0, toIndex: Int = -1) {
 		
 		var to_index: Int = toIndex
+		var from_index: Int = fromIndex
 		if (toIndex == -1) { to_index = count }
+		
+		if (to_index < fromIndex) {
+			let temp_index = fromIndex
+			from_index = to_index
+			to_index = temp_index
+		}
+		
 		if (to_index < 0) { return }
-		if (to_index < fromIndex) { return }
 		
 		if (debug.contains(.DATA)) {
-			print("Sync index " + String(fromIndex) + " to " + String(to_index))
+			print("Sync index " + String(from_index) + " to " + String(to_index))
 		}
 		
 		DispatchQueue.global().async {
 			if (toIndex < self.count) {
-				for i in (fromIndex...to_index).reversed() {
+				for i in (from_index...to_index).reversed() {
 					let list = self.get(index: i)
 					let data = protocols.getProtoByTypeID(id: Int(list.api.type_id))?.save_to_file(api: list.api)
 					UserDefaults.standard.set(data, forKey: (self.domain + ".API" + String(i)))

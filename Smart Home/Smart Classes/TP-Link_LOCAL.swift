@@ -176,7 +176,11 @@ class TPLINK_LOCAL: Plug, Local {
 	/
 	/ ---------------------------------------------*/
 	
-	private func getAllStates() -> (cancelled: Bool, json_str: String?) {
+	private func getAllStates(timeout: UInt = 0) -> (cancelled: Bool, json_str: String?) {
+		
+		if (timeout != 0) {
+			print("Unable to provide timeout")
+		}
 		
 		// Get Plug Info
 		let info_req = "{\"system\":{\"get_sysinfo\":null}}"
@@ -212,9 +216,9 @@ class TPLINK_LOCAL: Plug, Local {
 	}
 	
 	// get state of power and status LED
-	func getCommonStates() -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
-		
-		let result = getAllStates()
+	func getCommonStates(timeout: UInt = 0) -> (cancelled: Bool, pwr: Bool?, led: Bool?) {
+
+		let result = getAllStates(timeout: timeout)
 		
 		// Check Cancelled
 		if (result.cancelled) { return (true, nil, nil) }
@@ -247,8 +251,8 @@ class TPLINK_LOCAL: Plug, Local {
 	}
 	
 	// A Stub to Get Common States to satisfy protocol
-	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
-		let result = getCommonStates()
+	func getPowerState(timeout: UInt = 0) -> (cancelled: Bool, pwr: Bool?) {
+		let result = getCommonStates(timeout: timeout)
 		return (result.cancelled, result.pwr)
 	}
 	
@@ -270,7 +274,8 @@ class TPLINK_LOCAL: Plug, Local {
 		return (false, h,m,s)
 	}
 
-	func getSpecificState(match: String) -> (cancelled: Bool, state: String?) {
+	func getSpecificState(match: String, timeout: UInt = 0) -> (cancelled: Bool, state: String?) {
+		
 		
 		let result = getAllStates()
 		

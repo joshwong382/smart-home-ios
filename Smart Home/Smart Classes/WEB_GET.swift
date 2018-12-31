@@ -151,8 +151,8 @@ class WEB_GET: WEB_GET_GETINFO, Switch {
 		return base_url
 	}
 	
-	func getPowerState() -> (cancelled: Bool, pwr: Bool?) {
-		var result = JSON_CONN.do_GET(url: status_get)
+	func getPowerState(timeout: UInt = 0) -> (cancelled: Bool, pwr: Bool?) {
+		var result = JSON_CONN.do_GET(url: status_get, override_timeout: timeout)
 		
 		if (result == nil) { return (false, nil) }
 		result = result!.trimmingCharacters(in: .newlines)

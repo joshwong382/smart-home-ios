@@ -11,14 +11,13 @@ import SwiftyJSON
 
 class JSON_CONN: Connection {
 	
-	static var _timeout: Double = 3
 	var timeout: Double {
-		return JSON_CONN._timeout
+		return 3
 	}
 	
 	private var conn_url: URL?
 	private var valid: Bool = false
-	static private var queue = [URLSessionDataTask]()
+	private var queue = [URLSessionDataTask]()
 	
 	/*-----------------------------------------------
 	/
@@ -95,16 +94,16 @@ class JSON_CONN: Connection {
 		return POST(json: json)
 	}
 	
-	static func do_GET(url: URL) -> String? {
-		return do_HTTP(url: url, type: "GET", post_contents: "")
+	static func do_GET(url: URL, override_timeout: UInt = 0) -> String? {
+		return do_HTTP(url: url, type: "GET", post_contents: "", override_timeout: override_timeout)
 	}
 	
-	static func do_POST(url: URL, post_contents: String) -> String? {
-		return do_HTTP(url: url, type: "POST", post_contents: post_contents)
+	static func do_POST(url: URL, post_contents: String, override_timeout: UInt = 0) -> String? {
+		return do_HTTP(url: url, type: "POST", post_contents: post_contents, override_timeout: override_timeout)
 	}
 	
 	// Static Send Function
-	static func do_HTTP(url: URL, type: String, post_contents: String) -> String? {
+	private static func do_HTTP(url: URL, type: String, post_contents: String, override_timeout: UInt = 0) -> String? {
 		
 		let session = URLSession.shared
 		var request = URLRequest(url: url)
@@ -119,35 +118,40 @@ class JSON_CONN: Connection {
 		}
 		
 		var dataString: String? = nil
-		var success = false
+		var taskfin = false
 		
 		let task = session.dataTask(with: request as URLRequest) {
 			(data, response, error) in
 			
 			guard let data = data, let _:URLResponse = response, error == nil else {
-				if (debug.contains(.JSON)) { print("doHTTP error") }
+				if (debug.contains(.JSON)) { print("HTTP Connection Refused") }
+				taskfin = true
 				return
 			}
 			
 			dataString =  String(data: data, encoding: String.Encoding.utf8)
-			success = true
+			if (debug.contains(.JSON)) {
+				print("URL: " + url.absoluteString)
+				print("/*******************************")
+				print(dataString ?? "RESPONSE NIL")
+				print("*******************************/")
+				print("\n")
+			}
+			taskfin = true
 		}
-		
-		task.taskDescription = url.absoluteString + type + post_contents
-		queue.append(task)
 		
 		let current_time = DispatchTime.now().uptimeNanoseconds
 		task.resume()
 		
-		// Wait til task comes back or timeout in 5 seconds
-		while (!success && DispatchTime.now().uptimeNanoseconds - current_time < UInt64(_timeout*1e9)) {}
-		
-		if (debug.contains(.JSON)) {
-			print("URL: " + url.absoluteString)
-			print("/*******************************")
-			print(dataString ?? "RESPONSE NIL")
-			print("*******************************/")
-			print("\n\n")
+		// Wait til task comes back or timeout in override_timeout seconds
+		if (override_timeout != 0) {
+			while (!taskfin) {
+				if (DispatchTime.now().uptimeNanoseconds - current_time > UInt64(Double(override_timeout)*1e9)) {
+					break
+				}
+			}
+		} else {
+			while (!taskfin) {}
 		}
 		
 		return (dataString)
@@ -172,7 +176,7 @@ class JSON_CONN: Connection {
 		}
 		
 		// Check existing queues with the same data
-		for operation_q in JSON_CONN.queue {
+		for operation_q in queue {
 			if (operation_q.taskDescription == url_type.absoluteString + "POST" + json) {
 				operation_q.cancel()
 			}
@@ -210,7 +214,7 @@ class JSON_CONN: Connection {
 		
 		// Define task by json
 		task.taskDescription = url_type.absoluteString + request.httpMethod! + json
-		JSON_CONN.queue.append(task)
+		queue.append(task)
 		
 		let current_time = DispatchTime.now().uptimeNanoseconds
 		task.resume()
