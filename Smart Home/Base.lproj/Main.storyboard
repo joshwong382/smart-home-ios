@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="KaV-dd-58o">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="KaV-dd-58o">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -41,6 +41,7 @@
                             </popoverPassthroughViews>
                         </segue>
                         <segue destination="Obt-kv-aIb" kind="show" identifier="Table2DeviceSegue" id="QGK-OW-NKT"/>
+                        <segue destination="cVX-A1-hPb" kind="show" identifier="Table2SettingsSegue" id="PMx-dr-d5M"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sgU-m6-LKf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -183,7 +184,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="365.60000000000002" y="91.304347826086968"/>
+            <point key="canvasLocation" x="1233" y="90"/>
         </scene>
         <!--Select Device Type-->
         <scene sceneID="66T-pW-ahK">
@@ -231,7 +232,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lgf-n4-YMt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-551.20000000000005" y="1030.4347826086957"/>
+            <point key="canvasLocation" x="334" y="967"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="0Nd-c3-VZJ">
@@ -310,7 +311,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ifS-5F-RLL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="366" y="1032"/>
+            <point key="canvasLocation" x="1234" y="967"/>
+        </scene>
+        <!--SettingsVC-->
+        <scene sceneID="ZnG-SL-iYj">
+            <objects>
+                <viewController id="cVX-A1-hPb" customClass="SettingsVC" customModule="Smart_Home" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="AYR-oK-Cx7"/>
+                        <viewControllerLayoutGuide type="bottom" id="cCC-LL-B0v"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="W0p-Zc-s9I">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hh2-Ot-N8F" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1420" y="966"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="7Ye-Bo-CBd">
@@ -326,7 +345,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zcg-YH-mYX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1420" y="1031"/>
+            <point key="canvasLocation" x="-551" y="966"/>
         </scene>
     </scenes>
     <resources>

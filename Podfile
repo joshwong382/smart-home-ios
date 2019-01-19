@@ -8,6 +8,8 @@ target 'Smart Home' do
   # Pods for Smart Home
   pod 'ReachabilitySwift'
   pod 'SwiftyJSON'
+  pod 'CollapsibleTableSectionViewController', '~> 1.0.0'
+  pod 'QuickTableViewController'
 
   target 'Smart HomeTests' do
     inherit! :search_paths

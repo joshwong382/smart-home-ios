@@ -20,15 +20,15 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+		print("Lines of Code: " + String(number_of_lines))
 		// Edit Button
 		let edit_btn = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(edit(_:)))
 		navigationItem.leftBarButtonItem = edit_btn
 		
 		// Add Button
 		add_btn = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(create_smartobj(_:)))
-		settings_btn = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(create_smartobj(_:)))
-		navigationItem.rightBarButtonItem = add_btn
+		settings_btn = UIBarButtonItem(title: "Settings", style: .plain, target: self, action: #selector(switch_to_settings(_:)))
+		navigationItem.rightBarButtonItem = settings_btn
 
 		// Table Subview is refresh
 		threaded_check_relay_state()
@@ -55,6 +55,10 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 				}
 			}
 		}
+	}
+	
+	@objc func switch_to_settings(_ sender: UIBarButtonItem) {
+		self.performSegue(withIdentifier: "Table2SettingsSegue", sender: self)
 	}
 	
 	// Handles refresh
@@ -187,11 +191,11 @@ class UIViewWelcome: ReachabilityTableVCDelegate {
 		if(self.tableView.isEditing) {
 			self.tableView.setEditing(false, animated: true)
 			self.navigationItem.leftBarButtonItem?.title = "Edit"
-			self.navigationItem.rightBarButtonItem = add_btn
+			self.navigationItem.rightBarButtonItem = settings_btn
 		} else {
 			self.tableView.setEditing(true, animated: true)
 			self.navigationItem.leftBarButtonItem?.title = "Done"
-			self.navigationItem.rightBarButtonItem = settings_btn
+			self.navigationItem.rightBarButtonItem = add_btn
 		}
 		
 	}
